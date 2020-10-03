@@ -1,23 +1,27 @@
 import {EntityElement} from "./hgl/elements.js"
+import {Rect, Point} from "./hgl/geometry.js"
+import {ObjectElement} from "./SceneElements.js"
 
 export class SceneElement extends EntityElement {
 	constructor() {
 		super();
+		ObjectElement.register();
 
-		this.querySelectorAll(".block").forEach(e => {
+		this.querySelectorAll("x-block").forEach(e => {
 			e.setRectFromDataset();
 		});
 
-		this.querySelectorAll(".location").forEach(e => {
+		this.querySelectorAll("x-location").forEach(e => {
 			e.setRectFromDataset();
-		})
+		});
 
-		this.querySelectorAll(".object").forEach(e => {
+		this.querySelectorAll("x-object").forEach(e => {
 			e.setRectFromDataset();
-		})
+		});
 
 		//TODO: Clean up hack by listening to some type of layout event
 		window.setTimeout(e=>{this.updateSizeFromComputedSize()}, 100);
+		
 	}
 
 	verifyBlockCollision(point) {
@@ -25,7 +29,7 @@ export class SceneElement extends EntityElement {
 		if (!this.rect.containsPoint(point)) {
 			canPass = false; 
 		}
-		this.querySelectorAll(".block").forEach(e => {
+		this.querySelectorAll("x-block").forEach(e => {
 			let r = e.getRectFromCSS();
 			if (e.getRectFromCSS().containsPoint(point)) {
 				canPass = false;
@@ -36,7 +40,7 @@ export class SceneElement extends EntityElement {
 
 	checkLocationCollision(point) {
 		let location = null;
-		this.querySelectorAll(".location").forEach(e => {
+		this.querySelectorAll("x-location").forEach(e => {
 			let r = e.getRectFromCSS();
 			if (e.getRectFromCSS().containsPoint(point)) {
 				location = e;
@@ -45,11 +49,30 @@ export class SceneElement extends EntityElement {
 		return location;
 	}
 
-	getNearbyOjects(point) {
+	getClosestOject(point, range) {
+		let closestObject = null;
+		let shortestDistance = 100000;
 
+		this.querySelectorAll("x-object").forEach(e => {
+			if (e.disabled) {
+				return;
+			}
+			let objectCenterPoint = e.getRectFromCSS().centerPoint;
+			let horizontalDistance = Math.abs(objectCenterPoint.x - point.x);
+			if (horizontalDistance <= range) {
+				if (horizontalDistance < shortestDistance) {
+					closestObject = e.id;
+					shortestDistance = horizontalDistance;
+				}
+			}
+		});
+		return closestObject;
 	}
 
 	tick(game) {
+		this.querySelectorAll("x-object").forEach(e => {
+			e.tick();
+		})
 	}
 
 	static selector() {

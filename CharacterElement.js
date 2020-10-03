@@ -10,6 +10,7 @@ export class CharacterElement extends EntityElement {
 		this._state = PlayerState.idleRight;
 		this.spriteElement = document.createElement("div");
 		this.spriteElement.classList.add("sprite");
+		this.interactionRange = 300;
 		this.appendChild(this.spriteElement);
 	}
 

@@ -3,6 +3,7 @@
 <head>
 	<title>LD47</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" type="text/css" href="game.css">
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no">
 	<link rel="icon" href="img/favicon.png">
@@ -11,22 +12,39 @@
 
 <div id="game">
 	<div id="ui">
-		<div id="top-bar">
+		<div id="topBar">
 		</div>
 	</div>
 	<div id="camera">
 		<div id="world">
-			<div id="interactionCursor"></div>
+			<div id="interactionCursor">
+				<div class="tl"></div>
+				<div class="tr"></div>
+				<div class="bl"></div>
+				<div class="br"></div>
+			</div>
 		</div>
+		<div id="currentFocusLabel"></div>
 	</div>
 </div>
 
 <div id="repository">
-	<x-scene id="scene001">
-		<div class="block" data-rect="1300x0,100x600"></div>
-		<div class="location" id="alarmSpot" data-rect="600x0,300x600"></div>
-		<div class="object" id="alarm" data-rect="930x220,100x100"></div>
-		<div class="location" id="alarmWarn" data-rect="1150x0,100x600"></div>
+	<x-scene id="s001" data-title="Outside">
+		<x-object id="s001-bin" data-title="Trash bin" data-rect="825x275,125x275"></x-object>
+		<x-object id="s001-dumpster" data-title="Dumpster" data-rect="300x325,325x250"></x-object>
+		<x-object id="s001-window01" data-title="Window" data-disabled="true" data-rect="585x0,375x215"></x-object>
+		<x-location id="s001-binLeft" data-rect="700x0,125x275"></x-location>
+		<x-location id="s001-binRight" data-rect="950x0,125x275"></x-location>
+	</x-scene>
+	<x-scene id="s002" data-title="Supply Room">
+
+	</x-scene>
+	<x-scene id="s003" data-title="Hallway">
+		<x-block data-rect="1300x0,100x600"></x-block>
+		<x-object id="s003-door01" data-title="Door" data-rect="235x190,175x350"></x-object>
+		<x-object id="s003-alarm" data-title="Alarm box" data-rect="930x220,100x100"></x-object>
+		<x-location id="s003-alarmSpot" data-rect="600x0,300x600"></x-location>
+		<x-location id="s003-alarmWarn" data-rect="1200x0,100x600"></x-location>
 	</x-scene>
 </div>
 

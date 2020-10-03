@@ -1,4 +1,5 @@
 import "./hgl/extensions.js"
+import {TriggerType} from "./Constants.js"
 
 export class TriggerController {
 
@@ -16,9 +17,20 @@ export class TriggerController {
 		this.triggers.removeItem(trigger);
 	}
 
-	runTriggersForLocation(location) {
+	executeBringTriggers(location) {
 		this.triggers.forEach(trigger => {
-			if (trigger.location == location) {
+			if (trigger.type == TriggerType.bring && trigger.identifier == location) {
+				trigger.run(this.delegate);
+				if (!trigger.preserve) {
+					this.triggers.removeItem(trigger);
+				}
+			}
+		})
+	}
+
+	executeInteractionTriggers(objectId) {
+		this.triggers.forEach(trigger => {
+			if (trigger.type == TriggerType.interact && trigger.identifier == objectId) {
 				trigger.run(this.delegate);
 				if (!trigger.preserve) {
 					this.triggers.removeItem(trigger);
@@ -29,9 +41,9 @@ export class TriggerController {
 }
 
 export class Trigger {
-	constructor(type, location, trigger, preserve = false) {
+	constructor(type, identifier, trigger, preserve = false) {
 		this.type = type;
-		this.location = location;
+		this.identifier = identifier;
 		this.trigger = trigger;
 		this.preserve = preserve;
 	}

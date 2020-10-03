@@ -1,0 +1,18 @@
+x-scene#s001 {
+	background: transparent url(img/bg_001.png) no-repeat;
+	width: 1000px;
+}
+
+x-scene#s002 {
+	background: transparent url(img/bg_002.png) no-repeat;
+	width: 1000px;
+}
+
+x-scene#s003 {
+	background: transparent url(img/bg_003.png) no-repeat;
+	width: 1668px;
+}
+
+#player .sprite {
+	background-image: url("img/char_main.png");
+}

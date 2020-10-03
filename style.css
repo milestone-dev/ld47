@@ -43,7 +43,7 @@ body {
 	align-items: center;
 }
 
-#top-bar {
+#topBar {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -56,6 +56,17 @@ body {
 	z-index: 1000;
 	font-size: 16px;
 	text-transform: uppercase;
+}
+
+#currentFocusLabel {
+	position: absolute;
+	bottom: 8px;
+	left: 0;
+	right: 0;
+	color: #fff;
+	z-index: 30;
+	text-align: center;
+	font-size: 24px;
 }
 
 #camera {
@@ -72,6 +83,30 @@ body {
 	position: absolute;
 }
 
+#interactionCursor {
+	position: absolute;
+	z-index: 100;
+	opacity: 0;
+	transition: opacity 0.3s ease-out;
+}
+
+#interactionCursor div {
+	display: block;
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	background: red;
+}
+
+#interactionCursor .tl {top: 0; left: 0; }
+#interactionCursor .tr {top: 0; right: 0; }
+#interactionCursor .bl {bottom: 0; left: 0; }
+#interactionCursor .br {bottom: 0; right: 0; }
+
+#interactionCursor.active {
+	opacity: 1;
+}
+
 #repository {
 	display: none;
 }
@@ -81,21 +116,20 @@ x-scene {
 	position: absolute;		
 }
 
-x-scene#scene001 {
-	background: transparent url(img/bg_001.png) no-repeat;
-	width: 1668px;
+
+x-block, x-location, x-object {
+	position: absolute;
 }
 
-.block, .location, .object {
-	position: absolute;
+.debug x-block {
 	background: rgba(255,0,0,0.3);
 }
 
-.location {
+.debug x-location {
 	background: rgba(0,0,255,0.3);
 }
 
-.object {
+.debug x-object {
 	background: rgba(255,0,255,0.3);
 }
 
@@ -117,11 +151,7 @@ x-character .sprite {
 	right: 0;
 }
 
-#player .sprite {
-	background-image: url("img/char_main.png");
-}
-
-#player[data-state="idleRight"] .sprite,
-#player[data-state="walkingRight"] .sprite {
+x-character[data-state="idleRight"] .sprite,
+x-character[data-state="walkingRight"] .sprite {
 	transform: scaleX(-1);
 }

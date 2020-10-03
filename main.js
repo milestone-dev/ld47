@@ -24,12 +24,14 @@ class Game {
 		this.introAudioElement = document.getElementById("intro");
 		this.cameraElement = document.getElementById("camera");
 		this.worldElement = document.getElementById("world");
-		this.interactionCursorElement = document.getElementById("interactionCursor");
 		this.sceneRepositoryElement = document.getElementById("repository");
-		this.paused = true;
 
-		this.introScreenElement = document.getElementById("intro-screen");
-		this.titleScreenElement = document.getElementById("title-screen");
+		this.interactionCursorElement = document.getElementById("interactionCursor");
+		this.currentFocusObjectElement = null;
+
+		this.introScreenElement = document.getElementById("introScreen");
+		this.titleScreenElement = document.getElementById("titleScreen");
+		this.currentFocusLabelElement = document.getElementById("currentFocusLabel");
 
 		this.triggerController = new TriggerController(this);
 		Triggers.forEach(t => this.triggerController.register(t));
@@ -63,14 +65,16 @@ class Game {
 		window.setInterval(this.updateStatus.bind(this), 300);
 		window.focus();
 		this.startGame();
-		this.loadScene("scene001");
+		
 	}
 
 	startGame() {
-		CharacterElement.register();
-		this.playerElement = new CharacterElement();
-		this.playerElement.rect = new Rect(20, this.worldElement.getH() - 320, 83, 300);
-		this.worldElement.appendChild(this.playerElement);
+		if (this.loadScene("s001")) {
+			CharacterElement.register();
+			this.playerElement = new CharacterElement();
+			this.playerElement.rect = new Rect(20, this.worldElement.getH() - 320, 83, 300);
+			this.currentSceneElement.appendChild(this.playerElement);
+		}
 	}
 
 	loadScene(id) {
@@ -85,13 +89,18 @@ class Game {
 		if (scene) {
 			this.worldElement.appendChild(scene);
 			this.currentSceneElement = scene;
+		} else {
+			console.error("Failed to load scene", id);
+			return false;
 		}
-		console.log(id, scene)
+		console.log("Loaded scene", id);
+
+		return true;
 	}
 
 	tick(timestamp) {
 		const panic = () => {
-			console.log("panic");
+			console.error("Frames out of sync");
 			this.delta = 0;
 		}
 		if (timestamp < this.lastFrameTimeMs + this.fpsInterval) {
@@ -116,6 +125,11 @@ class Game {
 	}
 
 	updateStatus() {
+		if (this.currentFocusObjectElement) {
+			this.currentFocusLabelElement.innerText = this.currentFocusObjectElement.dataset.title;
+		} else {
+			this.currentFocusLabelElement.innerText = "";
+		}
 	}
 
 	updateGame(elapsedTimeSinceLastTick = 30) {
@@ -125,6 +139,9 @@ class Game {
 
 		//this.someController.tick();
 
+		if (!this.currentSceneElement) {
+			return;
+		}
 		this.playerElement.tick();
 		this.updateCamera();
 		this.updateInteractionCursor();
@@ -132,7 +149,15 @@ class Game {
 	}
 
 	updateInteractionCursor() {
-		let playerCenterPoint = this.playerElement
+		let currentFocusObjectId = this.currentSceneElement.getClosestOject(this.playerElement.rect.centerPoint, this.playerElement.interactionRange);
+		if (!currentFocusObjectId) {
+			this.currentFocusObjectElement = null;
+			this.interactionCursorElement.classList.remove("active");
+			return;
+		}
+		this.currentFocusObjectElement = this.currentSceneElement.querySelector("#"+currentFocusObjectId);
+		this.interactionCursorElement.setRect(this.currentFocusObjectElement.getRelativeRect());
+		this.interactionCursorElement.classList.add("active");
 	}
 
 	updateCamera() {
@@ -154,7 +179,11 @@ class Game {
 
 	onKeyDown(evt) {
 		//console.log("onKeyDown", evt.key);
-		switch(evt.key) {
+		let key = evt.key.toLowerCase();
+		if (!this.playerElement) {
+			return;
+		}
+		switch(key) {
 			case "a":
 				this.playerElement.state = PlayerState.walkingLeft;
 			break;
@@ -165,25 +194,53 @@ class Game {
 	}
 	onKeyUp(evt) {
 		//console.log("onKeyUp",evt.key);
-		if (this.playerElement.state == PlayerState.walkingLeft && evt.key == "a") {
+		let key = evt.key.toLowerCase();
+		if (!this.playerElement) {
+			return;
+		}
+		if (this.playerElement.state == PlayerState.walkingLeft && key == "a") {
 			this.playerElement.state = PlayerState.idleLeft;
 		}
-		if (this.playerElement.state == PlayerState.walkingRight && evt.key == "d") {
+		if (this.playerElement.state == PlayerState.walkingRight && key == "d") {
 			this.playerElement.state = PlayerState.idleRight;
 		}
+		if (this.currentFocusObjectElement && key == "e") {
+			this.playerInteractWithElement(this.currentFocusObjectElement.id);
+		}
+	}
+
+	playerInteractWithElement(objectId) {
+		this.triggerController.executeInteractionTriggers(objectId);
 	}
 
 	playerHitLocation(evt) {
 		let location = evt.detail;
-		this.triggerController.runTriggersForLocation(location);
+		console.log(location);
+		this.triggerController.executeBringTriggers(location);
 	}
+
+	// Trigger helper methods, break out into separate controller later if I have time
 
 	getSwitch(switchId) {
-		this.gameData[switchId];
+		return this.gameData[switchId];
 	}
 
-	setSwitch(switchId, state = true) {
-		this.gameData[switchId] = state;
+	setSwitch(switchId) {
+		this.gameData[switchId] = true;
+	}
+
+	clearSwitch(switchId) {
+		delete this.gameData[switchId];
+	}
+
+	enableSceneObject(objectId) {
+		let elm = this.currentSceneElement.querySelector("#" + objectId);
+		elm.disabled = false;
+	}
+
+	disableSceneObject(objectId) {
+		let elm = this.currentSceneElement.querySelector("#" + objectId);
+		elm.disabled = true;
 	}
 }
 

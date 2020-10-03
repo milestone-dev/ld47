@@ -24,6 +24,7 @@ class Game {
 		this.introAudioElement = document.getElementById("intro");
 		this.cameraElement = document.getElementById("camera");
 		this.worldElement = document.getElementById("world");
+		this.interactionCursorElement = document.getElementById("interactionCursor");
 		this.sceneRepositoryElement = document.getElementById("repository");
 		this.paused = true;
 
@@ -126,7 +127,12 @@ class Game {
 
 		this.playerElement.tick();
 		this.updateCamera();
+		this.updateInteractionCursor();
 		this.updateRequired = false;
+	}
+
+	updateInteractionCursor() {
+		let playerCenterPoint = this.playerElement
 	}
 
 	updateCamera() {

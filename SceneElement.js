@@ -15,17 +15,23 @@ export class SceneElement extends EntityElement {
 		this.querySelectorAll(".object").forEach(e => {
 			e.setRectFromDataset();
 		})
+
+		//TODO: Clean up hack by listening to some type of layout event
+		window.setTimeout(e=>{this.updateSizeFromComputedSize()}, 100);
 	}
 
 	verifyBlockCollision(point) {
-		let collided = true;
+		let canPass = true;
+		if (!this.rect.containsPoint(point)) {
+			canPass = false; 
+		}
 		this.querySelectorAll(".block").forEach(e => {
 			let r = e.getRectFromCSS();
 			if (e.getRectFromCSS().containsPoint(point)) {
-				collided = false;
+				canPass = false;
 			}
 		})
-		return collided;
+		return canPass;
 	}
 
 	checkLocationCollision(point) {
@@ -37,6 +43,10 @@ export class SceneElement extends EntityElement {
 			}
 		})
 		return location;
+	}
+
+	getNearbyOjects(point) {
+
 	}
 
 	tick(game) {

@@ -43,7 +43,7 @@ export class CharacterElement extends EntityElement {
 		const walkDelta = travelDistance * travelSpeed;
 
 		// TODO FIX Player point and where they are facing
-		let hitLocation = sceneElement.checkLocationCollision(this.point);
+		let hitLocation = sceneElement.checkLocationCollision(this.rect.centerPoint);
 		if (hitLocation) {
 			window.dispatchEvent(new CustomEvent("playerHitLocation", {detail:hitLocation.id}));
 		}

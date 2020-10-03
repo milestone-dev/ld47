@@ -7,7 +7,6 @@ let constantList = function(...values) {
 	return obj;
 }
 
-/* DEBUG */
 
 export const Debug = {
 	skipIntro: true,
@@ -17,19 +16,24 @@ export const Debug = {
 }
 Object.freeze(Debug);
 
-/* DURATION */
-
 export const Duration = {
 	defaultDuration: 300,
 }
 Object.freeze(Duration);
 
-/* CUSTOMERS */
-
 export const PlayerState = {
 	idle: "idle",
+	idleLeft: "idleLeft",
+	idleRight: "idleRight",
 	walkingLeft: "walkingLeft",
 	walkingRight: "walkingRight",
 	talking: "talking",
 }
 Object.freeze(PlayerState);
+
+
+export const TriggerType = {
+	bring: "bring",
+	interact: "interact",
+}
+Object.freeze(TriggerType);

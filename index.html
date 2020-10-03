@@ -9,16 +9,24 @@
 </head>
 <body>
 
-	<div id="game">
-		<div id="ui">
-			<div id="top-bar">
-			</div>
-		</div>
-		<div id="camera">
-			<div id="world" data-scene="001">
-			</div>
+<div id="game">
+	<div id="ui">
+		<div id="top-bar">
 		</div>
 	</div>
+	<div id="camera">
+		<div id="world">
+		</div>
+	</div>
+</div>
+
+<div id="repository">
+	<x-scene id="scene001">
+		<div class="block" data-rect="1300x0,100x600"></div>
+		<div class="location" id="alarmSpot" data-rect="600x0,300x600"></div>
+		<div class="object" id="alarm" data-rect="930x220,100x100"></div>
+	</x-scene>
+</div>
 
 <script type="module" src="main.js"></script>
 </body>

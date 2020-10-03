@@ -58,47 +58,16 @@ body {
 	text-transform: uppercase;
 }
 
-#camera {
+#world {
 	background: red;
 	height: 600px;
 	width: 1000px;
 	margin: 0 auto;
 	overflow: hidden;
-	position: relative;
 }
 
-#world {
-	height: 600px;
-	position: absolute;
-}
-
-#world[data-scene="001"] {
+#scene001 {
 	background: transparent url(img/bg_001.png) no-repeat;
+	height: 600px;
 	width: 1668px;
-	width: 2268px;
-}
-
-x-character {
-	display: block;
-	background-repeat: no-repeat;
-	position: absolute;
-	width: 84px;
-	height: 300px;	
-}
-
-x-character .sprite {
-	display: block;
-	position: absolute;
-	top: 0;
-	left: 0;
-	bottom: 0;
-	right: 0;
-}
-
-#player .sprite {
-	background-image: url("img/char_main.png");
-}
-
-#player[data-state="walkingRight"] .sprite {
-	transform: scaleX(-1);
 }

@@ -371,38 +371,42 @@ export const Triggers = [
 	new Trigger(TriggerType.sceneEnter, "s005",(g, d) => {
 		g.playerElement.point = new Point(80, 250);
 		if (!g.getSwitch("s005-knowsSecret")) {
-			g.setSwitch("s005-metScientist");
-			g.pause();
-			g.enqueueMessage("Who are you!? You are not supposed to be here!","scientist")
-			.enqueueMessage("I- I work here.")
-			.enqueueMessage("Lies!","scientist")
-			.openMessageBox((g)=>{
-				g.wait(500,(g)=> {
-					g.pause();
-					g.playSound("sfx_gunshot.ogg");
-					g.applyCameraEffect("shotOverlay");
-					g.setStateForPlayer(PlayerState.hurt);
-					g.enableSceneElement("s003-alarmBlock");
-					g.enableSceneElement("s003-alarmCaution");
-					g.setStateForSceneElement("s003-alarm", "");
-					g.clearSwitch("s003-alarmDisabled");
+			g.wait(500, (g)=> {
+				g.setSwitch("s005-metScientist");
+				g.pause();
+				g.enqueueMessage("Who are you!? You are not supposed to be here!","scientist")
+				.enqueueMessage("I- I work here.")
+				.enqueueMessage("Lies!","scientist")
+				.openMessageBox((g)=>{
+					g.wait(500,(g)=> {
+						g.pause();
+						g.playSound("sfx_gunshot.ogg");
+						g.applyCameraEffect("shotOverlay");
+						g.setStateForPlayer(PlayerState.hurt);
+						g.enableSceneElement("s003-alarmBlock");
+						g.enableSceneElement("s003-alarmCaution");
+						g.setStateForSceneElement("s003-alarm", "");
+						g.clearSwitch("s003-alarmDisabled");
 
-					g.wait(2000,(g)=> {
-						g.clearCameraEffects();
-						g.setSwitch("global-timeWarp2");
-						g.timeWarp((g) => {
-							g.fadeToScene("s001");
+						g.wait(2000,(g)=> {
+							g.clearCameraEffects();
+							g.setSwitch("global-timeWarp2");
+							g.timeWarp((g) => {
+								g.fadeToScene("s001");
+							})
 						})
-					})
+					});
 				});
-			});
+			})
 		} else {
-			g.pause();
-			g.enqueueMessage("Who are you!? You are not supposed to be here!","scientist")
-			.enqueueMessage("Professor Andelberth - I know about your wife! I know about Klara!")
-			.enqueueMessage("You... know.","scientist")
-			.openMessageBox((g) => {
-				g.setStateForSceneElement("s005-scientist", "relaxed");
+			g.wait(500, (g)=> {
+				g.pause();
+				g.enqueueMessage("Who are you!? You are not supposed to be here!","scientist")
+				.enqueueMessage("Professor Andelberth - I know about your wife! I know about Klara!")
+				.enqueueMessage("You... know.","scientist")
+				.openMessageBox((g) => {
+					g.setStateForSceneElement("s005-scientist", "relaxed");
+				});
 			});
 		}
 	}, true),
@@ -434,7 +438,7 @@ export const Triggers = [
 
 	//END
 	new Trigger(TriggerType.sceneEnter, "end",(g, d) => {
-		g.enqueueMessage('To be continued...<br><br>Thanks for playing! This game was produced during 48 hours for <a href="http://ldjam.com/" target="_blank">Ludum Dare</a> for the theme of <em>Stuck in a loop</em>.<br><br>Please cosider <a href="https://ldjam.com/users/milestone-games/games" target="_blank">rating the game and leaving a comment</a>.<br><br>Milestone Games',"game")
+		g.enqueueMessage('To be continued...<br><br>Thanks for playing! This game was produced during 48 hours for <a href="http://ldjam.com/" target="_blank">Ludum Dare</a> for the theme of <em>Stuck in a loop</em>.<br><br>Please cosider <a href="https://ldjam.com/events/ludum-dare/47/the-trade-secret" target="_blank">rating the game and leaving a comment</a>.<br><br>Milestone Games',"game")
 		.openMessageBox()
 
 	}),

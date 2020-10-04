@@ -106,7 +106,8 @@ class Game {
 		CharacterElement.register();
 		this.playerElement = new CharacterElement();
 		this.playerElement.rect = new Rect(0,0, 150, 330);
-		this.loadScene(window.location.hash.replace("#","") || "s001");
+		//this.loadScene(window.location.hash.replace("#","") || "s001");
+		this.loadScene("s001");
 	}
 
 	loadScene(id) {

@@ -87,7 +87,7 @@ export class Trigger {
 	}
 
 	run(delegate, data) {
-		console.log("TRIG:", this.type, this.identifier);
+		//console.log("TRIG:", this.type, this.identifier);
 		this.trigger(delegate, data);
 	}
 }

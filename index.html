@@ -8,7 +8,7 @@
 	<meta name="viewport" content="width=device-width, user-scalable=no">
 	<link rel="icon" href="img/favicon.png">
 </head>
-<body class="debug">
+<body>
 
 <div id="game">
 	<div id="camera">
@@ -17,7 +17,7 @@
 			<div id="currentFocusLabel"></div>
 			<div id="messageBox">
 				<div id="messageLabel"></div>
-				<div id="messageCloseLabel">Press [Space] to close.</div>
+				<div id="messageCloseLabel">Press [Space] to continue.</div>
 			</div>
 		</div>
 		<div id="worldWrapper">
@@ -70,10 +70,12 @@
 	</x-scene>
 
 	<x-scene id="s005" data-title="Lab">
-		<x-object id="s005-staircase" data-title="Door" data-rect="80x180,255x350"></x-object>
-		<x-object id="s005-scientist" data-title="Scientist" data-rect="755x175,200x370"></x-object>
+		<x-object id="s005-staircase" data-title="Staircase" data-rect="80x180,255x350"></x-object>
+		<x-object id="s005-scientist" data-title="Scientist" data-rect="755x240,150x330"></x-object>
 		<x-object id="s005-artifact" data-title="Strange artifact" data-rect="1485x200,386x350"></x-object>
 	</x-scene>
+
+	<x-scene id="end"></x-scene>
 </div>
 
 <script type="module" src="main.js"></script>

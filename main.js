@@ -248,18 +248,21 @@ class Game {
 
 
 	onSpaceKeyUp(evt) {
+		if (this.currentSceneElement.id == "end") {
+			return;
+		}
 		this.dismissCurrentMessage();
 	}
 
 	onBKeyUp(evt) {
-		document.body.classList.toggle("debug");
+		//document.body.classList.toggle("debug");
 	}
 
 	onLKeyUp(evt) {
 		this.loadScene("s00"+window.prompt("Scene #"));
 	}
 
-	onEKeyUp(evt) {
+	onEnterKeyUp(evt) {
 		if (this.paused) {
 			return;
 		}
@@ -296,7 +299,8 @@ class Game {
 
 		if (this.messageQueue.length > 0) {
 			let message = this.messageQueue.shift();
-			this.messageLabelElement.innerText = message;
+			this.messageBoxElement.dataset.character = message.character;
+			this.messageLabelElement.innerHTML = message.message;
 		} else {
 			this.closeMessageBox();
 		}
@@ -396,8 +400,8 @@ class Game {
 		return this;
 	}
 
-	enqueueMessage(message) {
-		this.messageQueue.push(message);
+	enqueueMessage(message, character="player") {
+		this.messageQueue.push({message:message, character:character});
 		return this;
 	}
 

@@ -7,17 +7,14 @@ export const Triggers = [
 	//SOO1
 
 	new Trigger(TriggerType.sceneEnter, "s001",(g, d) => {
-		if (g.getSwitch("global-timeWarp1")) {
-			g.setStateForSceneElement("s001-window01", "");
-			g.playerElement.point = new Point(80, 250);
-			g.wait(1000, (g) => {
-				g.clearCameraEffects();
-				g.enqueueMessage("What happened...?").openMessageBox();
-			});
-			return;
-		} else if(g.getSwitch("global-timeWarp2")) {
+
+		if(g.getSwitch("global-timeWarp2")) {
+			g.setStateForPlayer(PlayerState.idleRight);
 			g.setStateForPlayer(PlayerState.idleRight);
 			g.setStateForSceneElement("s001-window01", "");
+			g.clearSwitch("s001-onBin");
+			g.disableSceneElement("s001-window01");
+			g.enableSceneElement("s001-bin");
 			g.playerElement.point = new Point(80, 250);
 			g.wait(1000, (g) => {
 				g.clearCameraEffects();
@@ -27,6 +24,23 @@ export const Triggers = [
 			});
 			return;
 		}
+
+		if (g.getSwitch("global-timeWarp1")) {
+			g.setStateForSceneElement("s001-window01", "");
+			g.clearSwitch("s001-onBin");
+			g.disableSceneElement("s001-window01");
+			g.enableSceneElement("s001-bin");
+			g.playerElement.point = new Point(80, 250);
+			g.wait(1000, (g) => {
+				g.clearCameraEffects();
+				g.enqueueMessage("What happened...?")
+				g.enqueueMessage("I'm back outside!")
+				g.enqueueMessage("...and the window is back to being unbroken!")
+				.openMessageBox();
+			});
+			return;
+		}
+
 		if (d.previousSceneId == "s002") {
 			g.playerElement.point = new Point(850, 40);
 			g.setSwitch("s001-onBin");
@@ -35,9 +49,10 @@ export const Triggers = [
 		} else {
 			g.playerElement.point = new Point(80, 250);
 			if (!g.getSwitch("s001-firstTime")) {
-				g.enqueueMessage("The orders are clear. I will have to find a way into this research facility, locate the underground research lab, and document or if possible - steal - the industry secrets they keep here.")
+				g.enqueueMessage("OK - The orders are clear enough. I am supposed to find a way into this research facility, locate the underground research lab, and document or if possible - steal - the industry secrets they keep here.")
 				g.enqueueMessage("They client couldn't tell me to looking for. Only that it's something that helped this mining company increase their yields tenfold in the last year.")
 				g.enqueueMessage("If this is anything like the heist last year, I'm probably looking for some computer algorithm. I will have to keep my eyes open.")
+				g.enqueueMessage("Navigate with the A and D keyboard keys, and interact with your environment with [Enter]", "info")
 				.openMessageBox();
 				g.setSwitch("s001-firstTime");
 			}
@@ -72,6 +87,11 @@ export const Triggers = [
 	}, true),
 
 	new Trigger(TriggerType.interact, "s001-dumpster",(g, d) => {
+		if (g.getSwitch("global-timeWarp1") || g.getSwitch("global-timeWarp2")) {
+			g.enqueueMessage("No metal chair leg here... I have it on me!").openMessageBox();
+			return;
+		};
+
 		if (!g.getSwitch("s001-hasStone") && g.getSwitch("s001-hasInteractedWithWindow")) {
 			g.enqueueMessage("Perhaps...")
 			.enqueueMessage("Yes - I found a broken off chair of a metal chair. That should work.")
@@ -88,8 +108,40 @@ export const Triggers = [
 	}, true),
 
 	new Trigger(TriggerType.interact, "s001-window01",(g, d) => {
+		if (g.getSwitch("global-timeWarp1") && g.getSwitch("s001-onBin")) {
+			g.pause();
+			g.enqueueMessage("I still have this metal bar...").openMessageBox((g)=> {
+				g.pause();
+				g.setStateForSceneElement("s001-window01", "broken");
+				g.applyCameraEffect("shake");
+				g.playSound("sfx_smashWindow.ogg", (g) => {
+					g.clearCameraEffects();
+					g.setSwitch("s001-windowBroken");
+					g.fadeToScene("s002");
+					g.unpause();
+				});
+			});
+			return;
+		};
+
+		if (g.getSwitch("global-timeWarp2") && g.getSwitch("s001-onBin")) {
+			g.enqueueMessage("This is getting old").openMessageBox((g)=> {
+				g.pause();
+				g.setStateForSceneElement("s001-window01", "broken");
+				g.applyCameraEffect("shake");
+				g.playSound("sfx_smashWindow.ogg", (g) => {
+					g.clearCameraEffects();
+					g.setSwitch("s001-windowBroken");
+					g.fadeToScene("s002");
+					g.unpause();
+				});
+			});
+			return;
+		};
+
 		if (!g.getSwitch("s001-onBin")) {
 			g.enqueueMessage("I can't reach it.").openMessageBox();
+			return;
 		} else if (!g.getSwitch("s001-hasStone")) {
 			g.enqueueMessage("I can't break it with my bare hands").openMessageBox();
 			g.setSwitch("s001-hasInteractedWithWindow");
@@ -102,6 +154,7 @@ export const Triggers = [
 				g.playSound("sfx_smashWindow.ogg", (g) => {
 					g.clearCameraEffects();
 					g.setSwitch("s001-windowBroken");
+					g.clearSwitch("s001-onBin");
 					g.fadeToScene("s002");
 					g.unpause();
 				});
@@ -124,6 +177,10 @@ export const Triggers = [
 	}, true),
 
 	new Trigger(TriggerType.interact, "s002-window01",(g, d) => {
+		if (g.getSwitch("global-timeWarp1") || g.getSwitch("global-timeWarp2")) {
+			g.enqueueMessage("No reason to go back.").openMessageBox();
+			return;
+		}
 		g.fadeToScene("s001");
 	}, true),
 
@@ -132,6 +189,11 @@ export const Triggers = [
 	}, true),
 
 	new Trigger(TriggerType.interact, "s002-cupboard",(g, d) => {
+		if (g.getSwitch("global-timeWarp2")) {
+			g.enqueueMessage("I already have the plier on me!").openMessageBox();
+			return;
+		};
+
 		if (g.getSwitch("s003-inspectedAlarmBox")) {
 			if (!g.getSwitch("global-hasPliers")) {
 				g.enqueueMessage("These pliers might be useful.").openMessageBox();
@@ -145,6 +207,11 @@ export const Triggers = [
 	}, true),
 
 	new Trigger(TriggerType.interact, "s002-valve",(g, d) => {
+		if (g.getSwitch("global-timeWarp1") || g.getSwitch("global-timeWarp2")) {
+			g.enqueueMessage("I still have no reason to turn this valve...").openMessageBox();
+			return;
+		};
+
 		g.enqueueMessage("I have no reason to turn this valve").openMessageBox();
 	}, true),
 
@@ -155,7 +222,6 @@ export const Triggers = [
 	//SOO3
 
 	new Trigger(TriggerType.sceneEnter, "s003",(g, d) => {
-		g.setStateForSceneElement("s003-alarm", "cut");
 		if (!g.getSwitch("s003-firstEnter")) {
 			g.disableSceneElement("s003-alarmBlock");
 			g.disableSceneElement("s003-alarmCaution");
@@ -186,7 +252,7 @@ export const Triggers = [
 
 	new Trigger(TriggerType.enterLocation, "s003-alarmCaution",(g, d) => {
 		if (g.getSwitch("s003-observedAlarmSensor")) {
-			g.enqueueMessage("I should not move further. I will trigger the alarm").openMessageBox();
+			g.enqueueMessage("I should not move further, that will set off the alarm.").openMessageBox();
 		}
 	}, true),
 
@@ -198,15 +264,18 @@ export const Triggers = [
 			g.playSound("sfx_alarm.ogg");
 			g.applyCameraEffect("alarmOverlay");
 			g.enqueueMessage("Oh no!").enqueueMessage("I must have tripped the alarm! I have to get out!").openMessageBox((g) => {
-				g.wait(500, (g) => {
+				g.wait(1000, (g) => {
+					g.pause();
 					g.clearCameraEffects();
 					g.enableSceneElement("s003-alarmBlock");
 					g.enableSceneElement("s003-alarmCaution");
 					g.setSwitch("s003-observedAlarmSensor");
 					g.setSwitch("global-timeWarp1");
-					g.timeWarp((g) => {
-						g.fadeToScene("s001");
-					})
+					g.enqueueMessage("What's happening?!").openMessageBox((g) => {
+						g.timeWarp((g) => {
+							g.fadeToScene("s001");
+						});
+					});
 				});
 			});
 		} else {
@@ -216,7 +285,7 @@ export const Triggers = [
 
 	new Trigger(TriggerType.interact, "s003-alarm",(g, d) => {
 
-		if (g.getSwitch("s003-alarmDisabled")) {
+		if (g.getSwitch("s003-alarmDisabled") || g.getSwitch("global-timeWarp2")) {
 			return;
 		}
 
@@ -233,7 +302,7 @@ export const Triggers = [
 					g.enqueueMessage("I need a way to disable this alarm.").openMessageBox();
 				}
 			} else {
-				g.enqueueMessage("This seems to be the box for the alarm. There doesn't seem to be any way to disable it.").openMessageBox();
+				g.enqueueMessage("This seems to be the box for the alarm. There doesn't seem to be any buttons on this box that allows me to disable it.").openMessageBox();
 				g.setSwitch("s003-inspectedAlarmBox")
 			}
 		} else {
@@ -274,7 +343,19 @@ export const Triggers = [
 	}, true),
 
 	new Trigger(TriggerType.interact, "s004-computer",(g, d) => {
-		g.enqueueMessage("It's not password protected. Let's see what's on here.").openMessageBox();
+		if (g.getSwitch("global-timeWarp2")) {
+			g.enqueueMessage("Let's see if I can find something about that scientist.")
+			.enqueueMessage("Here's a recent employee update entry.")
+			.enqueueMessage("Employee ID #0023. Nicholas Andelberth -- Placed on leave of absence due to recent unacceptable behavioral incidents. The official conclusion is that this lapse in judgement and control was triggered by the recent unexplained dissappearance of his wife, Klara Andelberth. Another likely cause is prolonged exposure to [REDACTED].", "computer")
+			.enqueueMessage("Did his wife experience something similar to what I am?")
+			.openMessageBox((g)=>{
+				g.setSwitch("s005-knowsSecret")
+			});
+		} else {
+			g.enqueueMessage("It's not password protected. Let's see what's on here.")
+			.enqueueMessage("It's just personell files. I wouldn't even know what to look for.")
+			.openMessageBox();
+		}
 	}, true),
 
 	new Trigger(TriggerType.interact, "s004-cabinet01",(g, d) => {
@@ -290,31 +371,71 @@ export const Triggers = [
 	new Trigger(TriggerType.sceneEnter, "s005",(g, d) => {
 		g.playerElement.point = new Point(80, 250);
 		if (!g.getSwitch("s005-knowsSecret")) {
+			g.setSwitch("s005-metScientist");
 			g.pause();
-			g.enqueueMessage("Who are you!? You are not supposed to be here.")
-			.enqueueMessage("I-")
+			g.enqueueMessage("Who are you!? You are not supposed to be here!","scientist")
+			.enqueueMessage("I- I work here.")
+			.enqueueMessage("Lies!","scientist")
 			.openMessageBox((g)=>{
-				g.applyCameraEffect("shot");
-				g.setStateForPlayer(PlayerState.hurt);
-				g.wait(2000,(g)=> {
-					g.setSwitch("global-timeWarp2");
-					g.timeWarp((g) => {
-						g.fadeToScene("s001");
+				g.wait(500,(g)=> {
+					g.pause();
+					g.playSound("sfx_gunshot.ogg");
+					g.applyCameraEffect("shotOverlay");
+					g.setStateForPlayer(PlayerState.hurt);
+					g.enableSceneElement("s003-alarmBlock");
+					g.enableSceneElement("s003-alarmCaution");
+					g.setStateForSceneElement("s003-alarm", "");
+					g.clearSwitch("s003-alarmDisabled");
+
+					g.wait(2000,(g)=> {
+						g.clearCameraEffects();
+						g.setSwitch("global-timeWarp2");
+						g.timeWarp((g) => {
+							g.fadeToScene("s001");
+						})
 					})
-				})
+				});
+			});
+		} else {
+			g.pause();
+			g.enqueueMessage("Who are you!? You are not supposed to be here!","scientist")
+			.enqueueMessage("Professor Andelberth - I know about your wife! I know about Klara!")
+			.enqueueMessage("You... know.","scientist")
+			.openMessageBox((g) => {
+				g.setStateForSceneElement("s005-scientist", "relaxed");
 			});
 		}
 	}, true),
 
 	new Trigger(TriggerType.interact, "s005-staircase",(g, d) => {
-		g.fadeToScene("s003");
+		if (g.getSwitch("s005-knowsSecret")) {
+			g.enqueueMessage("No point in leaving now.","scientist").openMessageBox();
+		}
 	}, true),
 
 	new Trigger(TriggerType.interact, "s005-scientist",(g, d) => {
-		g.enqueueMessage("Hm.").openMessageBox();
+		if (!g.getSwitch("s005-talkedToScientist")) {
+			g.setSwitch("s005-talkedToScientist");
+			g.enqueueMessage("It was never supposed to turn out this way. We only wanted to use it for mining.","scientist")
+			.enqueueMessage("We found this... stone deep in the Raunisvaara mountain. With it, we have been able to mine the same vein of ore several times over. Corporate kept pushing for more result. We knew it was unstable. ","scientist")
+			.enqueueMessage("My wife Klara was the first victim, but I fear it is to blame for the recent dissappearances across town.","scientist")
+			.enqueueMessage("If you want to take it away. I will not hinder you. Do what you will.","scientist")
+			.openMessageBox();
+		} else {
+			g.enqueueMessage("Do what you will.","scientist").openMessageBox();
+		}
 	}, true),
 
 	new Trigger(TriggerType.interact, "s005-artifact",(g, d) => {
-		g.enqueueMessage("Ok.").openMessageBox();
+		g.timeWarp((g) => {
+			g.fadeToScene("end");
+		})
 	}, true),
+
+	//END
+	new Trigger(TriggerType.sceneEnter, "end",(g, d) => {
+		g.enqueueMessage('To be continued...<br><br>Thanks for playing! This game was produced during 48 hours for <a href="http://ldjam.com/" target="_blank">Ludum Dare</a> for the theme of <em>Stuck in a loop</em>.<br><br>Please cosider <a href="https://ldjam.com/users/milestone-games/games" target="_blank">rating the game and leaving a comment</a>.<br><br>Milestone Games',"game")
+		.openMessageBox()
+
+	}),
 ];

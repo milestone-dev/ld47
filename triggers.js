@@ -10,7 +10,7 @@ export const Triggers = [
 		if (d.previousSceneId == "s002") {
 			g.playerElement.point = new Point(850, 65);
 			g.setSwitch("s001-onBin");
-			g.enableSceneObject("s001-window01");
+			g.enableSceneElement("s001-window01");
 			g.disableSceneElement("s001-bin");
 		} else {
 			g.playerElement.point = new Point(80, 270);
@@ -21,7 +21,7 @@ export const Triggers = [
 		if (!g.getSwitch("s001-onBin")) {
 			g.playerElement.offsetY(-215);
 			g.setSwitch("s001-onBin");
-			g.enableSceneObject("s001-window01");
+			g.enableSceneElement("s001-window01");
 			g.disableSceneElement("s001-bin");
 		}
 	}, true),
@@ -31,7 +31,7 @@ export const Triggers = [
 			g.playerElement.offsetY(215);
 			g.clearSwitch("s001-onBin");
 			g.disableSceneElement("s001-window01");
-			g.enableSceneObject("s001-bin");
+			g.enableSceneElement("s001-bin");
 		}
 	}, true),
 
@@ -40,7 +40,7 @@ export const Triggers = [
 			g.playerElement.offsetY(215);
 			g.clearSwitch("s001-onBin");
 			g.disableSceneElement("s001-window01");
-			g.enableSceneObject("s001-bin");
+			g.enableSceneElement("s001-bin");
 		}
 	}, true),
 
@@ -100,15 +100,42 @@ export const Triggers = [
 		}
 	}, true),
 
+	new Trigger(TriggerType.sceneEnter, "s003",(g, d) => {
+		g.disableSceneElement("s003-alarmBlock");
+		g.disableSceneElement("s003-alarmCaution");
+
+	}),
+
 	new Trigger(TriggerType.interact, "s003-door01",(g, d) => {
 		g.loadScene("s002");
 	}, true),
 
 
-	new Trigger(TriggerType.bring, "s003-alarmWarn",(g, d) => {
-		g.enqueueMessage("If I move further the alarm will go off!").openMessageBox();
+	new Trigger(TriggerType.bring, "s003-hallwayReflection",(g, d) => {
+		g.enqueueMessage("This hallway is super long").openMessageBox();
+	}),
+
+	new Trigger(TriggerType.bring, "s003-alarmCaution",(g, d) => {
+		if (g.getSwitch("s003-observedAlarmSensor")) {
+			g.enqueueMessage("I should not move further. I will trigger the alarm").openMessageBox();
+		}
+	}),
+
+
+	new Trigger(TriggerType.bring, "s003-alarmTrigger",(g, d) => {
 		if (!g.getSwitch("s003-observedAlarmSensor")) {
-			g.setSwitch("s003-observedAlarmSensor");
+			//TODO Play Alarm, show red siren effect
+			g.enqueueMessage("Oh no!").openMessageBox((g) => {
+				g.setSwitch("s003-observedAlarmSensor");
+				g.enableSceneElement("s003-alarmBlock");
+				g.enableSceneElement("s003-alarmCaution");
+				g.loadScene("s001");
+				g.wait(500, (g) => {
+					g.enqueueMessage("What...?").openMessageBox();
+				})
+			});
+		} else {
+			// should not be possible
 		}
 	}),
 

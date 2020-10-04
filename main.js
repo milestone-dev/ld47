@@ -46,11 +46,12 @@ class Game {
 		this.elapsedTimeSinceLastTick;
 
 		this.currentDialog = null;
-		this.paused = false;
+		this._paused = false;
 		this.playerElement = null;
 		this.gameData = {};
 
 		this.messageQueue = [];
+		this.messageBoxClosedCallback = null;
 
 		//window.addEventListener("someEvent", this.someFunction.bind(this));
 		window.addEventListener("playerHitLocation", this.playerHitLocation.bind(this));
@@ -65,6 +66,17 @@ class Game {
 
 	get fpsInterval() {
 		return (1000 / 60) / this.speed;
+	}
+
+	set paused(paused) {
+		this._paused = paused;
+		if (paused) {
+			this.stopWalking();
+		}
+	}
+
+	get paused() {
+		return this._paused;
 	}
 
 
@@ -206,6 +218,9 @@ class Game {
 		if (!this.playerElement) {
 			return;
 		}
+		if (this.paused) {
+			return;
+		}
 		switch(key) {
 			case "a":
 				this.playerElement.state = PlayerState.walkingLeft;
@@ -229,32 +244,46 @@ class Game {
 	}
 
 	onEKeyUp(evt) {
+		if (this.paused) {
+			return;
+		}
 		if (this.currentFocusObjectElement) {
 			this.playerInteractWithElement(this.currentFocusObjectElement.id);
 		}
 	}
 
 	onAKeyUp(evt) {
-		if (this.playerElement.state == PlayerState.walkingLeft) {
-			this.playerElement.state = PlayerState.idleLeft;
+		if (this.paused) {
+			return;
 		}
+		this.stopWalking();
+
 	}
 
 	onDKeyUp(evt) {
-		if (this.playerElement.state == PlayerState.walkingRight) {
-			this.playerElement.state = PlayerState.idleRight;
+		if (this.paused) {
+			return;
 		}
+		this.stopWalking();
 	}
 
-	openMessageBox() {
-		this.paused = true;
-		this.messageBoxElement.classList.add("active");
-		this.displayNextEnqueuedMessage();
+	stopWalking() {
+		if (this.playerElement.state == PlayerState.walkingLeft) {
+			this.playerElement.state = PlayerState.idleLeft;
+		} else if (this.playerElement.state == PlayerState.walkingRight) {
+			this.playerElement.state = PlayerState.idleRight;
+		} else {
+			this.playerElement.state = PlayerState.idleRight;
+		}
 	}
 
 	closeMessageBox() {
 		this.messageBoxElement.classList.remove("active");
 		this.paused = false;
+		if (this.messageBoxClosedCallback) {
+			this.messageBoxClosedCallback(this);
+		}
+		this.messageBoxClosedCallback = null;
 	}
 
 	displayNextEnqueuedMessage() {
@@ -282,7 +311,6 @@ class Game {
 		}
 	}
 
-
 	////
 
 	onMouseDown(evt) {
@@ -307,6 +335,7 @@ class Game {
 	}
 
 	// Trigger helper methods, break out into separate controller later if I have time
+	/// START TRIGGER PROXY STUFF
 
 	getSwitch(switchId) {
 		return this.gameData[switchId];
@@ -330,10 +359,27 @@ class Game {
 		elm.disabled = true;
 	}
 
+	openMessageBox(callback) {
+		this.messageBoxClosedCallback = callback;
+		this.paused = true;
+		this.messageBoxElement.classList.add("active");
+		this.displayNextEnqueuedMessage();
+	}
+
 	enqueueMessage(message) {
 		this.messageQueue.push(message);
 		return this;
 	}
+
+	wait(timeout, callback) {
+		window.setTimeout(e => {
+			if (callback) {
+				callback(this);
+			}
+		}, timeout);
+	}
+
+	/// END TRIGGER PROXY STUFF
 }
 
 window.g = new Game();

@@ -92,6 +92,12 @@ body {
 	font-size: 32px;
 }
 
+#messageCloseLabel {
+	font-size: 16px;
+	text-align: right;
+	color: #ccc;
+}
+
 #interactionCursor {
 	position: absolute;
 	z-index: 100;

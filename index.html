@@ -15,7 +15,8 @@
 		<div id="ui">
 			<div id="currentFocusLabel"></div>
 			<div id="messageBox">
-				<div id="messageLabel">This is a very long message that spans several lines in the worst case</div>
+				<div id="messageLabel"></div>
+				<div id="messageCloseLabel">Press [Space] to close.</div>
 			</div>
 		</div>
 		<div id="world">
@@ -31,8 +32,8 @@
 		<x-object id="s001-dumpster" data-title="Dumpster" data-rect="300x325,325x250"></x-object>
 		<x-object id="s001-window01" data-title="Window" data-disabled="true" data-rect="585x0,375x215"></x-object>
 		<x-location id="s001-binLeft" data-rect="700x0,125x225"></x-location>
-		<x-location id="s001-binRight" data-rect="950x0,125x22d5"></x-location>
-		<x-object id="s001-pipe" data-title="Drain pipe" data-rect="150x0,75x50a0"></x-object>
+		<x-location id="s001-binRight" data-rect="950x0,125x225"></x-location>
+		<x-object id="s001-pipe" data-title="Drain pipe" data-rect="150x0,75x500"></x-object>
 	</x-scene>
 
 	<x-scene id="s002" data-title="Supply Room">
@@ -44,11 +45,12 @@
 
 	</x-scene>
 	<x-scene id="s003" data-title="Hallway">
-		<x-block id="s003-alarmBlock" data-rect="1300x0,100x600"></x-block>
 		<x-object id="s003-door01" data-title="Door" data-rect="235x190,175x350"></x-object>
 		<x-object id="s003-alarm" data-title="Box" data-rect="930x220,100x100"></x-object>
-		<x-location id="s003-alarmSpot" data-rect="600x0,300x600"></x-location>
-		<x-location id="s003-alarmWarn" data-rect="1200x0,100x600"></x-location>
+		<x-location id="s003-hallwayReflection" data-rect="600x0,16x600"></x-location>
+		<x-location id="s003-alarmCaution" data-rect="1200x0,100x600"></x-location>
+		<x-location id="s003-alarmTrigger" data-rect="1500x0,100x600"></x-location>
+		<x-block id="s003-alarmBlock" data-rect="1300x0,100x600"></x-block>
 	</x-scene>
 </div>
 

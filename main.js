@@ -253,7 +253,6 @@ class Game {
 
 	playerHitLocation(evt) {
 		let location = evt.detail;
-		console.log(location);
 		this.triggerController.executeBringTriggers(location);
 	}
 
@@ -271,13 +270,13 @@ class Game {
 		delete this.gameData[switchId];
 	}
 
-	enableSceneObject(objectId) {
-		let elm = this.currentSceneElement.querySelector("#" + objectId);
+	enableSceneElement(elementId) {
+		let elm = this.currentSceneElement.querySelector("#" + elementId);
 		elm.disabled = false;
 	}
 
-	disableSceneObject(objectId) {
-		let elm = this.currentSceneElement.querySelector("#" + objectId);
+	disableSceneElement(elementId) {
+		let elm = this.currentSceneElement.querySelector("#" + elementId);
 		elm.disabled = true;
 	}
 }

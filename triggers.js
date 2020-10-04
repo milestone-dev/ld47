@@ -11,7 +11,7 @@ export const Triggers = [
 			g.playerElement.point = new Point(850, 65);
 			g.setSwitch("s001-onBin");
 			g.enableSceneObject("s001-window01");
-			g.disableSceneObject("s001-bin");
+			g.disableSceneElement("s001-bin");
 		} else {
 			g.playerElement.point = new Point(80, 270);
 		}
@@ -22,7 +22,7 @@ export const Triggers = [
 			g.playerElement.offsetY(-215);
 			g.setSwitch("s001-onBin");
 			g.enableSceneObject("s001-window01");
-			g.disableSceneObject("s001-bin");
+			g.disableSceneElement("s001-bin");
 		}
 	}, true),
 
@@ -30,7 +30,7 @@ export const Triggers = [
 		if (g.getSwitch("s001-onBin")) {
 			g.playerElement.offsetY(215);
 			g.clearSwitch("s001-onBin");
-			g.disableSceneObject("s001-window01");
+			g.disableSceneElement("s001-window01");
 			g.enableSceneObject("s001-bin");
 		}
 	}, true),
@@ -39,7 +39,7 @@ export const Triggers = [
 		if (g.getSwitch("s001-onBin")) {
 			g.playerElement.offsetY(215);
 			g.clearSwitch("s001-onBin");
-			g.disableSceneObject("s001-window01");
+			g.disableSceneElement("s001-window01");
 			g.enableSceneObject("s001-bin");
 		}
 	}, true),
@@ -77,6 +77,19 @@ export const Triggers = [
 		g.loadScene("s003");
 	}, true),
 
+	new Trigger(TriggerType.interact, "s002-cupboard",(g, d) => {
+		if (g.getSwitch("s003-inspectedAlarmBox")) {
+			if (!g.getSwitch("global-hasPliers")) {
+				console.log("These pliers might be useful.");
+				g.setSwitch("global-hasPliers");
+			} else {
+				console.log("I already have the tools I need");
+			}
+		} else {
+			console.log("Tools. I can't think of anything I need in there");
+		}
+	}, true),
+
 	//SOO3
 
 	new Trigger(TriggerType.sceneEnter, "s003",(g, d) => {
@@ -92,20 +105,35 @@ export const Triggers = [
 	}, true),
 
 
-
-
-
-
-
-	new Trigger(TriggerType.bring, "s003-alarmSpot",(g, d) => {
-		console.log("I need to turn off the alarm first");
+	new Trigger(TriggerType.bring, "s003-alarmWarn",(g, d) => {
+		console.log("If I move further the alarm will go off!");
+		if (!g.getSwitch("s003-observedAlarmSensor")) {
+			g.setSwitch("s003-observedAlarmSensor");
+		}
 	}),
 
 	new Trigger(TriggerType.interact, "s003-alarm",(g, d) => {
-		console.log("Dat alarm");
-	}, true),
 
-	new Trigger(TriggerType.interact, "s003-door01",(g, d) => {
-		console.log("Exit!");
+		if (g.setSwitch("s003-alarmDisabled")) {
+			return;
+		}
+
+		if (g.getSwitch("s003-observedAlarmSensor")) {
+			if (g.getSwitch("s003-inspectedAlarmBox")) {
+				if (g.getSwitch("global-hasPliers")) {
+					console.log("Cutting the cord.");
+					g.setSwitch("s003-alarmDisabled");
+					g.disableSceneElement("s003-alarmBlock");
+					// TODO actually disable the blockade
+				} else {
+					console.log("I need a way to disable this alarm.");
+				}
+			} else {
+				console.log("This seems to be the box for the alarm. There doesn't seem to be any way to disable it.");
+				g.setSwitch("s003-inspectedAlarmBox")
+			}
+		} else {
+			console.log("Not sure what this box is for");
+		}
 	}, true),
 ];

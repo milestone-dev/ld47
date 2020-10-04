@@ -32,6 +32,9 @@ export class SceneElement extends EntityElement {
 			canPass = false; 
 		}
 		this.querySelectorAll("x-block").forEach(e => {
+			if (e.disabled) {
+				return;
+			}
 			let r = e.getRectFromCSS();
 			if (e.getRectFromCSS().containsPoint(point)) {
 				canPass = false;
@@ -43,6 +46,9 @@ export class SceneElement extends EntityElement {
 	checkLocationCollision(point) {
 		let location = null;
 		this.querySelectorAll("x-location").forEach(e => {
+			if (e.disabled) {
+				return;
+			}
 			let r = e.getRectFromCSS();
 			if (e.getRectFromCSS().containsPoint(point)) {
 				location = e;

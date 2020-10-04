@@ -55,6 +55,8 @@ class Game {
 
 		//window.addEventListener("someEvent", this.someFunction.bind(this));
 		window.addEventListener("playerHitLocation", this.playerHitLocation.bind(this));
+		window.addEventListener("playerEnteredLocation", this.playerEnteredLocation.bind(this));
+		window.addEventListener("playerLeftLocation", this.playerLeftLocation.bind(this));
 
 		//Debug stuff
 		this.debugSelectionElement = document.createElement("div");
@@ -117,6 +119,7 @@ class Game {
 
 		this.currentSceneElement.onSceneLoad();
 		this.currentSceneElement.appendChild(this.playerElement);
+		window.dispatchEvent(new CustomEvent("sceneLoaded", {detail:this.currentSceneElement}));
 		console.log("Loaded scene", id, this.currentSceneElement, this.playerElement.parentElement);
 
 		this.triggerController.executeEnterSceneTriggers(id, previousSceneId);
@@ -180,7 +183,7 @@ class Game {
 	}
 
 	updateInteractionCursor() {
-		let currentFocusObjectId = this.currentSceneElement.getClosestOject(this.playerElement.rect.centerPoint, this.playerElement.interactionRange);
+		let currentFocusObjectId = this.currentSceneElement.getClosestObject(this.playerElement.rect.centerPoint, this.playerElement.interactionRange);
 		if (!currentFocusObjectId) {
 			this.currentFocusObjectElement = null;
 			this.interactionCursorElement.classList.remove("active");
@@ -330,10 +333,16 @@ class Game {
 	}
 
 	playerHitLocation(evt) {
-		let location = evt.detail;
-		this.triggerController.executeBringTriggers(location);
+		this.triggerController.executeBringTriggers(evt.detail);
 	}
 
+	playerEnteredLocation(evt) {
+		this.triggerController.executeEnterLocationTriggers(evt.detail);
+	}
+
+	playerLeftLocation(evt) {
+		this.triggerController.executeLeaveLocationTriggers(evt.detail);
+	}
 	// Trigger helper methods, break out into separate controller later if I have time
 	/// START TRIGGER PROXY STUFF
 
@@ -351,12 +360,16 @@ class Game {
 
 	enableSceneElement(elementId) {
 		let elm = this.currentSceneElement.querySelector("#" + elementId);
-		elm.disabled = false;
+		if (elm) {
+			elm.enable();
+		}
 	}
 
 	disableSceneElement(elementId) {
 		let elm = this.currentSceneElement.querySelector("#" + elementId);
-		elm.disabled = true;
+		if (elm) {
+			elm.disable();
+		}
 	}
 
 	openMessageBox(callback) {
@@ -377,6 +390,15 @@ class Game {
 				callback(this);
 			}
 		}, timeout);
+	}
+
+	playSound(sound, callback) {
+		//TODO wait for sound end
+		window.setTimeout(e => {
+			if (callback) {
+				callback(this);
+			}
+		}, 500);
 	}
 
 	/// END TRIGGER PROXY STUFF

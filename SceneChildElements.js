@@ -12,14 +12,24 @@ export class SceneChildElement extends EntityElement {
 	}
 
 	set disabled(disabled) {
-		this.dataset.disabled = disabled;
-		if (!disabled) {
+		this._disabled = disabled;
+		if (disabled) {
+			this.dataset.disabled = "disabled";
+		} else {
 			delete this.dataset.disabled;
 		}
 	}
 
 	get disabled() {
-		return this.dataset.disabled
+		return this._disabled;
+	}
+
+	disable() {
+		this.disabled = true;
+	}
+
+	enable() {
+		this.disabled = false;
 	}
 	
 	tick(game) {
@@ -37,7 +47,7 @@ export class BlockElement extends SceneChildElement {
 	}
 
 	static selector() {
-		return "x-location";
+		return "x-block";
 	}
 }
 

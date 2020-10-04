@@ -45,16 +45,28 @@ export const Triggers = [
 	}, true),
 
 	new Trigger(TriggerType.interact, "s001-dumpster",(g, d) => {
-		if (!g.getSwitch("s001-hasStone")) {
-			g.enqueueMessage("I found a ").openMessageBox();
+		if (!g.getSwitch("s001-hasStone") && g.getSwitch("s001-hasInteractedWithWindow")) {
+			g.enqueueMessage("Perhaps...").enqueueMessage("I found a metal chair leg.").openMessageBox();
 			g.setSwitch("s001-hasStone");
+		} else {
+			g.enqueueMessage("There's nothing in there I need").openMessageBox();
 		}
-	}),
+	}, true),
 
 	new Trigger(TriggerType.interact, "s001-window01",(g, d) => {
 		if (!g.getSwitch("s001-hasStone")) {
 			g.enqueueMessage("I can't break it with my bare hands").openMessageBox();
-		} else {
+			g.setSwitch("s001-hasInteractedWithWindow");
+		} else if(!g.getSwitch("s001-hasEnteredWindowOnce")) {
+			g.setSwitch("s001-hasEnteredWindowOnce");
+			g.enqueueMessage("Here goes...").openMessageBox((g)=> {
+				g.playSound("sfx_smashWindow.ogg", (g) => {
+					g.setSwitch("s001-windowBroken");
+				});
+			});
+		}
+
+		if (g.getSwitch("s001-windowBroken")) {
 			g.loadScene("s002");
 		}
 	}, true),
@@ -90,9 +102,24 @@ export const Triggers = [
 		}
 	}, true),
 
+	new Trigger(TriggerType.interact, "s002-valve",(g, d) => {
+		g.enqueueMessage("I have no reason to turn this valve").openMessageBox();
+	}, true),
+
+	new Trigger(TriggerType.interact, "s002-shelf",(g, d) => {
+		g.enqueueMessage("Just old supplies and paint buckets").openMessageBox();
+	}, true),
+
 	//SOO3
 
 	new Trigger(TriggerType.sceneEnter, "s003",(g, d) => {
+		if (!g.getSwitch("s003-firstEnter")) {
+			console.log("Disabling some stuff on first enter");
+			g.disableSceneElement("s003-alarmBlock");
+			g.disableSceneElement("s003-alarmCaution");
+			g.setSwitch("s003-firstEnter");
+		}
+
 		if (d.previousSceneId == "s002") {
 			g.playerElement.point = new Point(350, 270);
 		} else {
@@ -100,29 +127,28 @@ export const Triggers = [
 		}
 	}, true),
 
-	new Trigger(TriggerType.sceneEnter, "s003",(g, d) => {
-		g.disableSceneElement("s003-alarmBlock");
-		g.disableSceneElement("s003-alarmCaution");
-
-	}),
 
 	new Trigger(TriggerType.interact, "s003-door01",(g, d) => {
 		g.loadScene("s002");
 	}, true),
 
 
-	new Trigger(TriggerType.bring, "s003-hallwayReflection",(g, d) => {
-		g.enqueueMessage("This hallway is super long").openMessageBox();
+	new Trigger(TriggerType.enterLocation, "s003-hallwayEast",(g, d) => {
+		g.enqueueMessage("Ok, this is it. Now to find the staircase to the lower floors.").openMessageBox();
 	}),
 
-	new Trigger(TriggerType.bring, "s003-alarmCaution",(g, d) => {
+	new Trigger(TriggerType.enterLocation, "s003-hallwayWest",(g, d) => {
+		g.enqueueMessage("No, this is the wrong way. The client told the me access to the lower floors is the other way.").openMessageBox();
+	}, true),
+
+	new Trigger(TriggerType.enterLocation, "s003-alarmCaution",(g, d) => {
 		if (g.getSwitch("s003-observedAlarmSensor")) {
 			g.enqueueMessage("I should not move further. I will trigger the alarm").openMessageBox();
 		}
-	}),
+	}, true),
 
 
-	new Trigger(TriggerType.bring, "s003-alarmTrigger",(g, d) => {
+	new Trigger(TriggerType.enterLocation, "s003-alarmTrigger",(g, d) => {
 		if (!g.getSwitch("s003-observedAlarmSensor")) {
 			//TODO Play Alarm, show red siren effect
 			g.enqueueMessage("Oh no!").openMessageBox((g) => {

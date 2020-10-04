@@ -29,6 +29,30 @@ export class TriggerController {
 		})
 	}
 
+	executeEnterLocationTriggers(location) {
+		let data = {};
+		this.triggers.forEach(trigger => {
+			if (trigger.type == TriggerType.enterLocation && trigger.identifier == location) {
+				trigger.run(this.delegate, data);
+				if (!trigger.preserve) {
+					this.triggers.removeItem(trigger);
+				}
+			}
+		})
+	}
+
+	executeLeaveLocationTriggers(location) {
+		let data = {};
+		this.triggers.forEach(trigger => {
+			if (trigger.type == TriggerType.leaveLocation && trigger.identifier == location) {
+				trigger.run(this.delegate, data);
+				if (!trigger.preserve) {
+					this.triggers.removeItem(trigger);
+				}
+			}
+		})
+	}
+
 	executeInteractionTriggers(objectId) {
 		let data = {};
 		this.triggers.forEach(trigger => {
@@ -63,6 +87,7 @@ export class Trigger {
 	}
 
 	run(delegate, data) {
+		console.log("TRIG:", this.type, this.identifier);
 		this.trigger(delegate, data);
 	}
 }

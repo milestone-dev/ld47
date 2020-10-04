@@ -1,3 +1,4 @@
+import "./hgl/extensions.js"
 import {EntityElement} from "./hgl/elements.js"
 import {Rect, Point} from "./hgl/geometry.js"
 import {SceneElement} from "./SceneElement.js"
@@ -11,7 +12,12 @@ export class CharacterElement extends EntityElement {
 		this.spriteElement = document.createElement("div");
 		this.spriteElement.classList.add("sprite");
 		this.interactionRange = 300;
+		this.characterLocations = [];
+		this.currentSceneElement = null;
 		this.appendChild(this.spriteElement);
+		window.addEventListener("sceneLoaded", evt => {
+			this.currentSceneElement = evt.detail;
+		});
 	}
 
 	static getProductCategoryFromProductType(productType) {
@@ -41,18 +47,52 @@ export class CharacterElement extends EntityElement {
 		return this._state;
 	}
 
+	updateLocations() {
+		//TODO make generic for any character
+		let currentLocations = [];
+		let previousLocationsSnapshot = this.characterLocations.clone();
+		// TODO FIX Player point and where they are facing
+		let hitLocation = this.currentSceneElement.checkLocationCollision(this.rect.centerPoint);
+		if (hitLocation) {
+			let hitLocationId = hitLocation.id;
+			if (!currentLocations.contains(hitLocationId)) {
+				currentLocations.push(hitLocationId);
+			}
+			window.dispatchEvent(new CustomEvent("playerHitLocation", {detail:hitLocationId}));
+		}
+
+		this.characterLocations = currentLocations;
+
+		let leftLocations = previousLocationsSnapshot.filter(l => {
+			return !this.characterLocations.contains(l);
+		});
+
+		let enteredLocations = this.characterLocations.filter(l => {
+			return !previousLocationsSnapshot.contains(l);
+		});
+
+		enteredLocations.forEach(locationId => {
+			window.dispatchEvent(new CustomEvent("playerEnteredLocation", {detail:locationId}));
+		});
+
+		leftLocations.forEach(locationId => {
+			window.dispatchEvent(new CustomEvent("playerLeftLocation", {detail:locationId}));
+		});
+	}
+
 	tick(game) {
-		let sceneElement = document.querySelector("#world x-scene");
+		// TODO remove this super hack
+		if (!this.currentSceneElement) {
+			console.error("No scene");
+			return;
+		}
+
 		const travelSpeed = 0.9;
 		let travelDistance = 15;
 		const distanceBetweenObjects = 10;
 		const walkDelta = travelDistance * travelSpeed;
+		this.updateLocations();
 
-		// TODO FIX Player point and where they are facing
-		let hitLocation = sceneElement.checkLocationCollision(this.rect.centerPoint);
-		if (hitLocation) {
-			window.dispatchEvent(new CustomEvent("playerHitLocation", {detail:hitLocation.id}));
-		}
 
 		if (this.state == PlayerState.walkingLeft || this.state == PlayerState.walkingRight) {
 			let x = this.point.x;
@@ -64,7 +104,7 @@ export class CharacterElement extends EntityElement {
 				xCollisionBoundary = this.getW();
 			}
 			let point = this.point;
-			if (sceneElement.verifyBlockCollision(point.pointOffsetBy(xCollisionBoundary, 0))) {
+			if (this.currentSceneElement.verifyBlockCollision(point.pointOffsetBy(xCollisionBoundary, 0))) {
 				point.x = x;
 			}
 			this.point = point;

@@ -36,5 +36,7 @@ export const TriggerType = {
 	bring: "bring",
 	interact: "interact",
 	sceneEnter: "sceneEnter",
+	enterLocation: "enterLocation",
+	leaveLocation: "leaveLocation",
 }
 Object.freeze(TriggerType);

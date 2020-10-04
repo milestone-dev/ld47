@@ -1,11 +1,13 @@
 import {EntityElement} from "./hgl/elements.js"
 import {Rect, Point} from "./hgl/geometry.js"
-import {ObjectElement} from "./SceneChildElements.js"
+import {ObjectElement, BlockElement, LocationElement} from "./SceneChildElements.js"
 
 export class SceneElement extends EntityElement {
 	constructor() {
 		super();
 		ObjectElement.register();
+		BlockElement.register();
+		LocationElement.register();
 
 		this.querySelectorAll("x-block").forEach(e => {
 			e.setRectFromDataset();
@@ -18,7 +20,6 @@ export class SceneElement extends EntityElement {
 		this.querySelectorAll("x-object").forEach(e => {
 			e.setRectFromDataset();
 		});
-
 	}
 
 	onSceneLoad() {
@@ -57,7 +58,7 @@ export class SceneElement extends EntityElement {
 		return location;
 	}
 
-	getClosestOject(point, range) {
+	getClosestObject(point, range) {
 		let closestObject = null;
 		let shortestDistance = 100000;
 

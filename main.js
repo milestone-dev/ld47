@@ -81,6 +81,14 @@ class Game {
 		return this._paused;
 	}
 
+	pause() {
+		this.paused = true;
+	}
+
+	unpause() {
+		this.paused = false;
+	}
+
 
 	init() {
 		this.eventHandler = new EventHandler(this, window);
@@ -130,7 +138,7 @@ class Game {
 
 	tick(timestamp) {
 		const panic = () => {
-			console.error("Frames out of sync");
+			console.log("Frames out of sync");
 			this.delta = 0;
 		}
 		if (timestamp < this.lastFrameTimeMs + this.fpsInterval) {

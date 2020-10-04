@@ -60,8 +60,11 @@ export const Triggers = [
 		} else if(!g.getSwitch("s001-hasEnteredWindowOnce")) {
 			g.setSwitch("s001-hasEnteredWindowOnce");
 			g.enqueueMessage("Here goes...").openMessageBox((g)=> {
+				g.pause();
+				//TODO: Change Window GFX
 				g.playSound("sfx_smashWindow.ogg", (g) => {
 					g.setSwitch("s001-windowBroken");
+					g.unpause();
 				});
 			});
 		}
@@ -151,6 +154,7 @@ export const Triggers = [
 	new Trigger(TriggerType.enterLocation, "s003-alarmTrigger",(g, d) => {
 		if (!g.getSwitch("s003-observedAlarmSensor")) {
 			//TODO Play Alarm, show red siren effect
+			g.playSound("sfx_alarm.ogg");
 			g.enqueueMessage("Oh no!").openMessageBox((g) => {
 				g.setSwitch("s003-observedAlarmSensor");
 				g.enableSceneElement("s003-alarmBlock");

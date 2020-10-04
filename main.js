@@ -3,7 +3,7 @@ import {EventHandler} from "./hgl/eventhandler.js"
 import {Point, Rect, Size} from "./hgl/geometry.js"
 import {CharacterElement} from "./CharacterElement.js"
 import {SceneElement} from "./SceneElement.js"
-import {PlayerState} from "./Constants.js"
+import {PlayerState, Duration} from "./Constants.js"
 import {TriggerController} from "./TriggerController.js"
 import {Triggers} from "./triggers.js"
 
@@ -175,12 +175,6 @@ class Game {
 	}
 
 	updateGame(elapsedTimeSinceLastTick = 30) {
-		if (this.paused) {
-			return;
-		}
-
-		//this.someController.tick();
-
 		if (!this.currentSceneElement) {
 			return;
 		}
@@ -360,10 +354,12 @@ class Game {
 
 	setSwitch(switchId) {
 		this.gameData[switchId] = true;
+		return this;
 	}
 
 	clearSwitch(switchId) {
 		delete this.gameData[switchId];
+		return this;
 	}
 
 	enableSceneElement(elementId) {
@@ -371,6 +367,7 @@ class Game {
 		if (elm) {
 			elm.enable();
 		}
+		return this;
 	}
 
 	disableSceneElement(elementId) {
@@ -378,6 +375,7 @@ class Game {
 		if (elm) {
 			elm.disable();
 		}
+		return this;
 	}
 
 	openMessageBox(callback) {
@@ -398,6 +396,7 @@ class Game {
 				callback(this);
 			}
 		}, timeout);
+		return this;
 	}
 
 	playSound(sound, callback) {
@@ -407,6 +406,32 @@ class Game {
 				callback(this);
 			}
 		}, 500);
+		return this;
+	}
+
+	applyCameraEffect(effect) {
+		this.cameraElement.classList.add(effect);
+		return this;
+	}
+
+	clearCameraEffects() {
+		this.cameraElement.className = "";
+		return this;
+	}
+
+	enterScene(sceneId) {
+		this.loadScene(sceneId);
+		return this;
+	}
+
+	fadeToScene(sceneId) {
+		this.pause();
+		this.applyCameraEffect("fadeOut").wait(Duration.fadeDuration, (g) => {
+			g.clearCameraEffects()
+			.enterScene(sceneId)
+			.applyCameraEffect("fadeIn");
+			this.unpause();
+		});
 	}
 
 	/// END TRIGGER PROXY STUFF

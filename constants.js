@@ -11,13 +11,12 @@ let constantList = function(...values) {
 export const Debug = {
 	skipIntro: true,
 	muteMusic: true,
-	infiniteStorage: false,
-	automaticProduction: false,
 }
 Object.freeze(Debug);
 
 export const Duration = {
 	defaultDuration: 300,
+	fadeDuration: 600,
 }
 Object.freeze(Duration);
 

@@ -1,6 +1,6 @@
 import {Point, Rect, Size} from "./hgl/geometry.js"
 import {Trigger} from "./TriggerController.js"
-import {TriggerType} from "./Constants.js"
+import {TriggerType, Duration} from "./Constants.js"
 
 export const Triggers = [
 
@@ -14,6 +14,10 @@ export const Triggers = [
 			g.disableSceneElement("s001-bin");
 		} else {
 			g.playerElement.point = new Point(80, 270);
+			if (!g.getSwitch("s001-firstTime")) {
+				g.enqueueMessage("I have to find a way into...").openMessageBox();
+				g.setSwitch("s001-firstTime");
+			}
 		}
 	}, true),
 
@@ -54,7 +58,9 @@ export const Triggers = [
 	}, true),
 
 	new Trigger(TriggerType.interact, "s001-window01",(g, d) => {
-		if (!g.getSwitch("s001-hasStone")) {
+		if (!g.getSwitch("s001-onBin")) {
+			g.enqueueMessage("I can't reach it.").openMessageBox();
+		} else if (!g.getSwitch("s001-hasStone")) {
 			g.enqueueMessage("I can't break it with my bare hands").openMessageBox();
 			g.setSwitch("s001-hasInteractedWithWindow");
 		} else if(!g.getSwitch("s001-hasEnteredWindowOnce")) {
@@ -62,15 +68,18 @@ export const Triggers = [
 			g.enqueueMessage("Here goes...").openMessageBox((g)=> {
 				g.pause();
 				//TODO: Change Window GFX
+				g.applyCameraEffect("shake");
 				g.playSound("sfx_smashWindow.ogg", (g) => {
+					g.clearCameraEffects();
 					g.setSwitch("s001-windowBroken");
+					g.fadeToScene("s002");
 					g.unpause();
 				});
 			});
 		}
 
 		if (g.getSwitch("s001-windowBroken")) {
-			g.loadScene("s002");
+			g.fadeToScene("s002");
 		}
 	}, true),
 
@@ -85,11 +94,11 @@ export const Triggers = [
 	}, true),
 
 	new Trigger(TriggerType.interact, "s002-window01",(g, d) => {
-		g.loadScene("s001");
+		g.fadeToScene("s001");
 	}, true),
 
 	new Trigger(TriggerType.interact, "s002-door01",(g, d) => {
-		g.loadScene("s003");
+		g.fadeToScene("s003");
 	}, true),
 
 	new Trigger(TriggerType.interact, "s002-cupboard",(g, d) => {
@@ -132,7 +141,7 @@ export const Triggers = [
 
 
 	new Trigger(TriggerType.interact, "s003-door01",(g, d) => {
-		g.loadScene("s002");
+		g.fadeToScene("s002");
 	}, true),
 
 
@@ -154,15 +163,27 @@ export const Triggers = [
 	new Trigger(TriggerType.enterLocation, "s003-alarmTrigger",(g, d) => {
 		if (!g.getSwitch("s003-observedAlarmSensor")) {
 			//TODO Play Alarm, show red siren effect
+			g.pause();
 			g.playSound("sfx_alarm.ogg");
+			g.applyCameraEffect("alarm");
 			g.enqueueMessage("Oh no!").openMessageBox((g) => {
-				g.setSwitch("s003-observedAlarmSensor");
-				g.enableSceneElement("s003-alarmBlock");
-				g.enableSceneElement("s003-alarmCaution");
-				g.loadScene("s001");
-				g.wait(500, (g) => {
-					g.enqueueMessage("What...?").openMessageBox();
-				})
+				g.pause();
+				g.applyCameraEffect("alarmOverlay");
+				g.wait(1000, (g) => {
+					g.clearCameraEffects();
+					g.applyCameraEffect("timeWarpOverlay");
+					g.applyCameraEffect("shake");
+					g.enableSceneElement("s003-alarmBlock");
+					g.enableSceneElement("s003-alarmCaution");
+					g.setSwitch("s003-observedAlarmSensor");
+					g.wait(1000, (g) => {
+						g.fadeToScene("s001");
+						g.wait(500, (g) => {
+							g.clearCameraEffects();
+							g.enqueueMessage("What...?").openMessageBox();
+						});
+					});
+				});
 			});
 		} else {
 			// should not be possible

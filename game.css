@@ -16,3 +16,84 @@ x-scene#s003 {
 #player .sprite {
 	background-image: url("img/char_main.png");
 }
+
+#camera.timeWarpOverlay #world {
+	animation-duration: 1s;
+	animation-name: timeWarp;
+	animation-iteration-count: infinite;
+	animation-timing-function: ease-in-out;
+}
+
+#camera.alarmOverlay #world {
+	animation-duration: 1s;
+	animation-name: alarm;
+	animation-iteration-count: infinite;
+	animation-timing-function: ease-in-out;
+}
+
+#camera.fadeOut {
+	animation-duration: 0.6s;
+	animation-name: fadeOut;
+	animation-timing-function: ease-in;
+}
+
+#camera.fadeIn {
+	animation-duration: 0.6s;
+	animation-name: fadeIn;
+	animation-timing-function: ease-in;
+}
+
+#camera.shake #worldWrapper {
+	animation-duration: 0.1s;
+	animation-name: shake;
+	animation-iteration-count: infinite;
+	animation-timing-function: ease-in-out;
+}
+
+@keyframes fadeOut {
+	0% {
+		filter: brightness(1);
+	}
+	100% {
+		filter: brightness(0);
+	}	
+}
+
+@keyframes fadeIn {
+	0% {
+		filter: brightness(0);
+	}
+	100% {
+		filter: brightness(1);
+	}	
+}
+
+@keyframes timeWarp {
+	0% {
+		filter: hue-rotate(0deg);
+	}
+	50% {
+		filter: hue-rotate(360deg) sepia(70%);
+	}	
+}
+
+@keyframes alarm {
+	0% {
+		filter: sepia(0) hue-rotate(0) saturate(100%);
+	}
+	50% {
+		filter: sepia(100%) hue-rotate(-40deg) saturate(400%);	
+	}	
+}
+
+@keyframes shake {
+	0% {
+		transform: translate(-2px, 1px);
+	}
+	33% {
+		transform: translate(-1px, -2px);
+	}
+	66% {
+		transform: translate(-2px, 2px);
+	}
+}

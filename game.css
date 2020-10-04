@@ -14,8 +14,19 @@ x-scene#s003 {
 }
 
 #player .sprite {
-	background-image: url("img/char_main.png");
+	background-image: url("img/char_main_walk.png");
 }
+
+#player[data-state="walkingLeft"] .sprite,
+#player[data-state="walkingRight"] .sprite {
+	animation: moveX .6s steps(5) infinite;
+}
+
+@keyframes moveX{
+	from { background-position-x:calc(-25*6*2px);}
+	to { background-position-x:calc(-25*6*7px);}
+}
+
 
 #camera.timeWarpOverlay #world {
 	animation-duration: 1s;
@@ -32,13 +43,13 @@ x-scene#s003 {
 }
 
 #camera.fadeOut {
-	animation-duration: 0.6s;
+	animation-duration: 0.3s;
 	animation-name: fadeOut;
 	animation-timing-function: ease-in;
 }
 
 #camera.fadeIn {
-	animation-duration: 0.6s;
+	animation-duration: 0.3s;
 	animation-name: fadeIn;
 	animation-timing-function: ease-in;
 }

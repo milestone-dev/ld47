@@ -87,7 +87,7 @@ export class CharacterElement extends EntityElement {
 			return;
 		}
 
-		const travelSpeed = 0.9;
+		const travelSpeed = 0.6;
 		let travelDistance = 15;
 		const distanceBetweenObjects = 10;
 		const walkDelta = travelDistance * travelSpeed;

@@ -45,6 +45,8 @@ class Game {
 		this.lastFrameTimeMs = 0;
 		this.elapsedTimeSinceLastTick;
 
+		this.pressedKeys = {};
+
 		this.currentDialog = null;
 		this._paused = false;
 		this.playerElement = null;
@@ -73,7 +75,8 @@ class Game {
 	set paused(paused) {
 		this._paused = paused;
 		if (paused) {
-			this.stopWalking();
+			this.pressedKeys.a = this.pressedKeys.d = false;
+			this.updatePlayerWalkingState();
 		}
 	}
 
@@ -102,7 +105,7 @@ class Game {
 	startGame() {
 		CharacterElement.register();
 		this.playerElement = new CharacterElement();
-		this.playerElement.rect = new Rect(0,0, 83, 300);
+		this.playerElement.rect = new Rect(0,0, 150, 330);
 		this.loadScene(window.location.hash.replace("#","") || "s001");
 	}
 
@@ -226,6 +229,7 @@ class Game {
 		if (this.paused) {
 			return;
 		}
+		this.pressedKeys[key] = true;
 		switch(key) {
 			case "a":
 				this.playerElement.state = PlayerState.walkingLeft;
@@ -235,6 +239,14 @@ class Game {
 			break;
 		}
 	}
+
+
+	onKeyUp(evt) {
+		let key = evt.key.toLowerCase();
+		this.pressedKeys[key] = false;
+		this.updatePlayerWalkingState();
+	}
+
 
 	onSpaceKeyUp(evt) {
 		this.dismissCurrentMessage();
@@ -257,28 +269,13 @@ class Game {
 		}
 	}
 
-	onAKeyUp(evt) {
-		if (this.paused) {
-			return;
-		}
-		this.stopWalking();
-
-	}
-
-	onDKeyUp(evt) {
-		if (this.paused) {
-			return;
-		}
-		this.stopWalking();
-	}
-
-	stopWalking() {
-		if (this.playerElement.state == PlayerState.walkingLeft) {
-			this.playerElement.state = PlayerState.idleLeft;
-		} else if (this.playerElement.state == PlayerState.walkingRight) {
-			this.playerElement.state = PlayerState.idleRight;
-		} else {
-			this.playerElement.state = PlayerState.idleRight;
+	updatePlayerWalkingState() {
+		if (!this.pressedKeys.a && !this.pressedKeys.d) {
+			if(this.playerElement.state == PlayerState.walkingLeft) {
+				this.playerElement.state = PlayerState.idleLeft;
+			} else {
+				this.playerElement.state = PlayerState.idleRight;
+			}
 		}
 	}
 
@@ -427,10 +424,22 @@ class Game {
 	fadeToScene(sceneId) {
 		this.pause();
 		this.applyCameraEffect("fadeOut").wait(Duration.fadeDuration, (g) => {
-			g.clearCameraEffects()
-			.enterScene(sceneId)
-			.applyCameraEffect("fadeIn");
-			this.unpause();
+			g.clearCameraEffects();
+			g.enterScene(sceneId)
+			g.applyCameraEffect("fadeIn").wait(Duration.fadeDuration, (g) => {
+				g.clearCameraEffects();
+				g.unpause();
+			});
+		});
+	}
+
+	timeWarp(callback) {
+		this.pause();
+		this.applyCameraEffect("timeWarpOverlay").applyCameraEffect("shake").wait(Duration.timeWarpDuration, (g) => {
+			g.clearCameraEffects().unpause();
+			if (callback) {
+				callback(g);
+			}
 		});
 	}
 

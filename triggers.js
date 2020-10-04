@@ -8,14 +8,14 @@ export const Triggers = [
 
 	new Trigger(TriggerType.sceneEnter, "s001",(g, d) => {
 		if (d.previousSceneId == "s002") {
-			g.playerElement.point = new Point(850, 65);
+			g.playerElement.point = new Point(850, 40);
 			g.setSwitch("s001-onBin");
 			g.enableSceneElement("s001-window01");
 			g.disableSceneElement("s001-bin");
 		} else {
-			g.playerElement.point = new Point(80, 270);
+			g.playerElement.point = new Point(80, 250);
 			if (!g.getSwitch("s001-firstTime")) {
-				g.enqueueMessage("I have to find a way into...").openMessageBox();
+				g.enqueueMessage("The orders are clear. I have to find a way into this research facility and steal any and all company secrets that they keep here.").openMessageBox();
 				g.setSwitch("s001-firstTime");
 			}
 		}
@@ -87,9 +87,9 @@ export const Triggers = [
 
 	new Trigger(TriggerType.sceneEnter, "s002",(g, d) => {
 		if (d.previousSceneId == "s003") {
-			g.playerElement.point = new Point(750, 270);
+			g.playerElement.point = new Point(750, 250);
 		} else {
-			g.playerElement.point = new Point(350, 270);
+			g.playerElement.point = new Point(350, 250);
 		}
 	}, true),
 
@@ -133,9 +133,9 @@ export const Triggers = [
 		}
 
 		if (d.previousSceneId == "s002") {
-			g.playerElement.point = new Point(350, 270);
+			g.playerElement.point = new Point(350, 250);
 		} else {
-			g.playerElement.point = new Point(350, 270);
+			g.playerElement.point = new Point(350, 250);
 		}
 	}, true),
 
@@ -169,20 +169,18 @@ export const Triggers = [
 			g.enqueueMessage("Oh no!").openMessageBox((g) => {
 				g.pause();
 				g.applyCameraEffect("alarmOverlay");
-				g.wait(1000, (g) => {
+				g.wait(3000, (g) => {
 					g.clearCameraEffects();
-					g.applyCameraEffect("timeWarpOverlay");
-					g.applyCameraEffect("shake");
 					g.enableSceneElement("s003-alarmBlock");
 					g.enableSceneElement("s003-alarmCaution");
 					g.setSwitch("s003-observedAlarmSensor");
-					g.wait(1000, (g) => {
+					g.timeWarp((g) => {
 						g.fadeToScene("s001");
-						g.wait(500, (g) => {
+						g.wait(1000, (g) => {
 							g.clearCameraEffects();
-							g.enqueueMessage("What...?").openMessageBox();
+							g.enqueueMessage("What happened...?").openMessageBox();
 						});
-					});
+					})
 				});
 			});
 		} else {
@@ -192,7 +190,7 @@ export const Triggers = [
 
 	new Trigger(TriggerType.interact, "s003-alarm",(g, d) => {
 
-		if (g.setSwitch("s003-alarmDisabled")) {
+		if (g.getSwitch("s003-alarmDisabled")) {
 			return;
 		}
 

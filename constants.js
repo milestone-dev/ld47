@@ -16,7 +16,8 @@ Object.freeze(Debug);
 
 export const Duration = {
 	defaultDuration: 300,
-	fadeDuration: 600,
+	fadeDuration: 300,
+	timeWarpDuration: 1500,
 }
 Object.freeze(Duration);
 

@@ -102,9 +102,10 @@ body {
 }
 
 #messageCloseLabel {
+	margin: 16px 0 8px 0dd ;
 	font-size: 16px;
-	text-align: right;
-	color: #ccc;
+	text-align: center;
+	color: #888;
 }
 
 #interactionCursor {
@@ -203,10 +204,11 @@ x-character .sprite {
 	left: 0;
 	bottom: 0;
 	right: 0;
+	background-repeat: no-repeat;
 }
 
-x-character[data-state="idleRight"] .sprite,
-x-character[data-state="walkingRight"] .sprite {
+x-character[data-state="idleLeft"] .sprite,
+x-character[data-state="walkingLeft"] .sprite {
 	transform: scaleX(-1);
 }
 

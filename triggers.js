@@ -329,6 +329,11 @@ export const Triggers = [
 	}, true),
 
 	new Trigger(TriggerType.interact, "s003-staircase",(g, d) => {
+	 	if (g.getSwitch("global-timeWarp2") && !g.getSwitch("s005-knowsSecret")) {
+			g.enqueueMessage("No way am I going down there again without some form of protection.")
+			.openMessageBox();
+	 		return;
+	 	}
 		g.fadeToScene("s005");
 	}, true),
 

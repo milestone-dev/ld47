@@ -13,6 +13,16 @@ x-scene#s003 {
 	width: 3000px;
 }
 
+x-scene#s004 {
+	background: transparent url(img/bg_004.png) no-repeat;
+	width: 1000px;
+}
+
+x-scene#s005 {
+	background: transparent url(img/bg_005.png) no-repeat;
+	width: 1800px;
+}
+
 #player .sprite {
 	background-image: url("img/char_main_walk.png");
 }
@@ -20,6 +30,10 @@ x-scene#s003 {
 #player[data-state="walkingLeft"] .sprite,
 #player[data-state="walkingRight"] .sprite {
 	animation: moveX .6s steps(5) infinite;
+}
+
+#player[data-state="hurt"] .sprite {
+	background-position-x:calc(-25*6*8px)
 }
 
 @keyframes moveX{
@@ -107,4 +121,12 @@ x-scene#s003 {
 	66% {
 		transform: translate(-2px, 2px);
 	}
+}
+
+#s001-window01[data-state="broken"] {
+	background: transparent url(img/obj_winbroken.png) no-repeat;
+}
+
+#s003-alarm[data-state="cut"] {
+	background: transparent url(img/obj_alarmcut.png) no-repeat;
 }

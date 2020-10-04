@@ -142,11 +142,9 @@ x-scene {
 	position: absolute;		
 }
 
-
 x-block, x-location, x-object {
 	position: absolute;
 	border: 3px solid rgba(0,0,0,0);
-	opacity: 0.6;
 }
 
 x-block::after, x-location::after, x-object::after {
@@ -157,23 +155,10 @@ x-block::after, x-location::after, x-object::after {
 	display: none;
 }
 
-x-block:hover::after, x-location:hover::after, x-object:hover::after {
+.debug x-block:hover::after,
+.debug x-location:hover::after,
+.debug x-object:hover::after {
 	display: block;
-}
-
-x-block[data-disabled="disabled"],
-x-location[data-disabled="disabled"],
-x-object[data-disabled="disabled"] {
-	opacity: 0.3;
-}
-
-x-block:hover,
-x-block[data-disabled="disabled"]:hover,
-x-location:hover,
-x-location[data-disabled="disabled"]:hover,
-x-object:hover,
-x-object[data-disabled="disabled"]:hover {
-	opacity: 1;
 }
 
 .debug x-block {

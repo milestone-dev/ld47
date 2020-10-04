@@ -131,10 +131,9 @@ class Game {
 		this.currentSceneElement.onSceneLoad();
 		this.currentSceneElement.appendChild(this.playerElement);
 		window.dispatchEvent(new CustomEvent("sceneLoaded", {detail:this.currentSceneElement}));
-		console.log("Loaded scene", id, this.currentSceneElement, this.playerElement.parentElement);
+		//console.log("Loaded scene", id, this.currentSceneElement, this.playerElement.parentElement);
 
 		this.triggerController.executeEnterSceneTriggers(id, previousSceneId);
-		window.location.hash = "#"+id;
 
 		return true;
 	}
@@ -273,8 +272,10 @@ class Game {
 		if (!this.pressedKeys.a && !this.pressedKeys.d) {
 			if(this.playerElement.state == PlayerState.walkingLeft) {
 				this.playerElement.state = PlayerState.idleLeft;
-			} else {
+			} else if(this.playerElement.state == PlayerState.walkingRight) {
 				this.playerElement.state = PlayerState.idleRight;
+			} else if (this.playerElement.state != PlayerState.hurt) {
+				this.playerElement.state == PlayerState.idleRight
 			}
 		}
 	}
@@ -380,6 +381,19 @@ class Game {
 		this.paused = true;
 		this.messageBoxElement.classList.add("active");
 		this.displayNextEnqueuedMessage();
+	}
+
+	setStateForSceneElement(elementId, state) {
+		let elm = this.currentSceneElement.querySelector("#" + elementId);
+		if (elm) {
+			elm.dataset.state = state;
+		}
+		return this;
+	}
+
+	setStateForPlayer(state) {
+		this.playerElement.state = state;
+		return this;
 	}
 
 	enqueueMessage(message) {

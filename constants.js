@@ -28,6 +28,7 @@ export const PlayerState = {
 	walkingLeft: "walkingLeft",
 	walkingRight: "walkingRight",
 	talking: "talking",
+	hurt: "hurt",
 }
 Object.freeze(PlayerState);
 

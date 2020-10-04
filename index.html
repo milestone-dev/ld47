@@ -8,7 +8,7 @@
 	<meta name="viewport" content="width=device-width, user-scalable=no">
 	<link rel="icon" href="img/favicon.png">
 </head>
-<body>
+<body class="debug">
 
 <div id="game">
 	<div id="camera">
@@ -42,19 +42,37 @@
 	<x-scene id="s002" data-title="Supply Room">
 		<x-object id="s002-window01" data-title="Window" data-rect="115x75,375x275"></x-object>
 		<x-object id="s002-door01" data-title="Door" data-rect="660x170,175x350"></x-object>
-		<x-object id="s002-shelf" data-title="Shelves" data-rect="5x200,240x350"></x-object>
+		<x-object id="s002-shelf" data-title="Shelves" data-rect="0x200,110x350"></x-object>
 		<x-object id="s002-valve" data-title="Valve" data-rect="855x325,65x65"></x-object>
 		<x-object id="s002-cupboard" data-title="Cupboard" data-rect="400x400,240x120"></x-object>
-
 	</x-scene>
+
 	<x-scene id="s003" data-title="Hallway">
 		<x-object id="s003-door01" data-title="Door" data-rect="235x190,175x350"></x-object>
-		<x-object id="s003-alarm" data-title="Box" data-rect="930x220,100x100"></x-object>
+		<x-object id="s003-door02" data-title="Door" data-rect="2165x190,175x350"></x-object>
+		<x-object id="s003-staircase" data-title="Staircase" data-rect="2580x190,285x350"></x-object>
+		<x-object id="s003-alarm" data-title="Box" data-rect="903x219,162x132"></x-object>
 		<x-location id="s003-hallwayWest" data-rect="0x0,150x600"></x-location>
 		<x-location id="s003-hallwayEast" data-rect="600x0,16x600"></x-location>
 		<x-location id="s003-alarmCaution" data-rect="1200x0,100x600"></x-location>
-		<x-location id="s003-alarmTrigger" data-rect="1500x0,100x600"></x-location>
+		<x-location id="s003-alarmTrigger" data-rect="1600x0,100x600"></x-location>
 		<x-block id="s003-alarmBlock" data-rect="1300x0,100x600"></x-block>
+		<x-object id="s003-cabinet01" data-title="Cabinet" data-rect="1150x175,200x370"></x-object>
+		<x-object id="s003-cabinet02" data-title="Cabinet" data-rect="1400x175,200x370"></x-object>
+		<x-object id="s003-cabinet03" data-title="Cabinet" data-rect="1600x175,200x370"></x-object>
+	</x-scene>
+
+	<x-scene id="s004" data-title="Office">
+		<x-object id="s004-door01" data-title="Door" data-rect="60x180,175x350"></x-object>
+		<x-object id="s004-computer" data-title="Computer" data-rect="370x305,290x130"></x-object>
+		<x-object id="s004-cabinet01" data-title="Cabinet" data-rect="755x175,200x370"></x-object>
+		<x-object id="s004-plant" data-title="Plant" data-rect="900x330,100x250"></x-object>
+	</x-scene>
+
+	<x-scene id="s005" data-title="Lab">
+		<x-object id="s005-staircase" data-title="Door" data-rect="80x180,255x350"></x-object>
+		<x-object id="s005-scientist" data-title="Scientist" data-rect="755x175,200x370"></x-object>
+		<x-object id="s005-artifact" data-title="Strange artifact" data-rect="1485x200,386x350"></x-object>
 	</x-scene>
 </div>
 

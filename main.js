@@ -32,6 +32,8 @@ class Game {
 		this.introScreenElement = document.getElementById("introScreen");
 		this.titleScreenElement = document.getElementById("titleScreen");
 		this.currentFocusLabelElement = document.getElementById("currentFocusLabel");
+		this.messageBoxElement = document.getElementById("messageBox");
+		this.messageLabelElement = document.getElementById("messageLabel");
 
 		this.triggerController = new TriggerController(this);
 		Triggers.forEach(t => this.triggerController.register(t));
@@ -47,6 +49,8 @@ class Game {
 		this.paused = false;
 		this.playerElement = null;
 		this.gameData = {};
+
+		this.messageQueue = [];
 
 		//window.addEventListener("someEvent", this.someFunction.bind(this));
 		window.addEventListener("playerHitLocation", this.playerHitLocation.bind(this));
@@ -211,29 +215,75 @@ class Game {
 			break;
 		}
 	}
-	onKeyUp(evt) {
-		//console.log("onKeyUp",evt.key);
-		let key = evt.key.toLowerCase();
-		if (!this.playerElement) {
-			return;
-		}
-		if (this.playerElement.state == PlayerState.walkingLeft && key == "a") {
-			this.playerElement.state = PlayerState.idleLeft;
-		}
-		if (this.playerElement.state == PlayerState.walkingRight && key == "d") {
-			this.playerElement.state = PlayerState.idleRight;
-		}
-		if (this.currentFocusObjectElement && key == "e") {
+
+	onSpaceKeyUp(evt) {
+		this.dismissCurrentMessage();
+	}
+
+	onBKeyUp(evt) {
+		document.body.classList.toggle("debug");
+	}
+
+	onLKeyUp(evt) {
+		this.loadScene("s00"+window.prompt("Scene #"));
+	}
+
+	onEKeyUp(evt) {
+		if (this.currentFocusObjectElement) {
 			this.playerInteractWithElement(this.currentFocusObjectElement.id);
 		}
-		if (key == "b") {
-			document.body.classList.toggle("debug");
-		}
-		if (key == "l") {
-			let s = "s00"+window.prompt("Scene #");
-			this.loadScene(s);
+	}
+
+	onAKeyUp(evt) {
+		if (this.playerElement.state == PlayerState.walkingLeft) {
+			this.playerElement.state = PlayerState.idleLeft;
 		}
 	}
+
+	onDKeyUp(evt) {
+		if (this.playerElement.state == PlayerState.walkingRight) {
+			this.playerElement.state = PlayerState.idleRight;
+		}
+	}
+
+	openMessageBox() {
+		this.paused = true;
+		this.messageBoxElement.classList.add("active");
+		this.displayNextEnqueuedMessage();
+	}
+
+	closeMessageBox() {
+		this.messageBoxElement.classList.remove("active");
+		this.paused = false;
+	}
+
+	displayNextEnqueuedMessage() {
+		if (!this.messageBoxElement.classList.contains("active")) {
+			return;
+		}
+
+		if (this.messageQueue.length > 0) {
+			let message = this.messageQueue.shift();
+			this.messageLabelElement.innerText = message;
+		} else {
+			this.closeMessageBox();
+		}
+	}
+
+	dismissCurrentMessage() {
+		if (!this.messageBoxElement.classList.contains("active")) {
+			return;
+		}
+
+		if (this.messageQueue.length > 0) {
+			this.displayNextEnqueuedMessage();
+		} else {
+			this.closeMessageBox();
+		}
+	}
+
+
+	////
 
 	onMouseDown(evt) {
 		// TODO Implement object measuring tool
@@ -278,6 +328,11 @@ class Game {
 	disableSceneElement(elementId) {
 		let elm = this.currentSceneElement.querySelector("#" + elementId);
 		elm.disabled = true;
+	}
+
+	enqueueMessage(message) {
+		this.messageQueue.push(message);
+		return this;
 	}
 }
 

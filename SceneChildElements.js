@@ -2,7 +2,7 @@ import {EntityElement} from "./hgl/elements.js"
 import {Rect, Point} from "./hgl/geometry.js"
 
 
-export class SceneElement extends EntityElement {
+export class SceneChildElement extends EntityElement {
 	constructor() {
 		super();
 	}
@@ -27,11 +27,11 @@ export class SceneElement extends EntityElement {
 	}
 
 	static selector() {
-		return "x-sceneelement";
+		return "x-scenechildelement";
 	}
 }
 
-export class BlockElement extends SceneElement {
+export class BlockElement extends SceneChildElement {
 	constructor() {
 		super();
 	}
@@ -41,7 +41,7 @@ export class BlockElement extends SceneElement {
 	}
 }
 
-export class LocationElement extends SceneElement {
+export class LocationElement extends SceneChildElement {
 	constructor() {
 		super();
 	}
@@ -51,7 +51,7 @@ export class LocationElement extends SceneElement {
 	}
 }
 
-export class ObjectElement extends SceneElement {
+export class ObjectElement extends SceneChildElement {
 	constructor() {
 		super();
 	}

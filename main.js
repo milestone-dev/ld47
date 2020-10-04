@@ -51,6 +51,11 @@ class Game {
 		//window.addEventListener("someEvent", this.someFunction.bind(this));
 		window.addEventListener("playerHitLocation", this.playerHitLocation.bind(this));
 
+		//Debug stuff
+		this.debugSelectionElement = document.createElement("div");
+		this.debugSelectionElement.id = "debugSelection";
+		this.selecitonStartPoint = new Point(0,0);
+
 		this.init();
 	}
 
@@ -69,18 +74,18 @@ class Game {
 	}
 
 	startGame() {
-		if (this.loadScene("s001")) {
-			CharacterElement.register();
-			this.playerElement = new CharacterElement();
-			this.playerElement.rect = new Rect(20, this.worldElement.getH() - 320, 83, 300);
-			this.currentSceneElement.appendChild(this.playerElement);
-		}
+		CharacterElement.register();
+		this.playerElement = new CharacterElement();
+		this.playerElement.rect = new Rect(0,0, 83, 300);
+		this.loadScene(window.location.hash.replace("#","") || "s001");
 	}
 
 	loadScene(id) {
 		SceneElement.register();
 		let previousScene = this.worldElement.querySelector("x-scene");
+		let previousSceneId = null;
 		if (previousScene) {
+			previousSceneId = previousScene.id;
 			this.sceneRepositoryElement.appendChild(previousScene);
 		}
 		this.currentSceneElement = null;
@@ -93,7 +98,13 @@ class Game {
 			console.error("Failed to load scene", id);
 			return false;
 		}
-		console.log("Loaded scene", id);
+
+		this.currentSceneElement.onSceneLoad();
+		this.currentSceneElement.appendChild(this.playerElement);
+		console.log("Loaded scene", id, this.currentSceneElement, this.playerElement.parentElement);
+
+		this.triggerController.executeEnterSceneTriggers(id, previousSceneId);
+		window.location.hash = "#"+id;
 
 		return true;
 	}
@@ -126,9 +137,13 @@ class Game {
 
 	updateStatus() {
 		if (this.currentFocusObjectElement) {
-			this.currentFocusLabelElement.innerText = this.currentFocusObjectElement.dataset.title;
+			if (this.currentFocusLabelElement.innerText != this.currentFocusObjectElement.dataset.title) {
+				this.currentFocusLabelElement.innerText = this.currentFocusObjectElement.dataset.title;
+			}
 		} else {
-			this.currentFocusLabelElement.innerText = "";
+			if (this.currentFocusLabelElement.innerText != "") {
+				this.currentFocusLabelElement.innerText = "";
+			}
 		}
 	}
 
@@ -162,6 +177,10 @@ class Game {
 
 	updateCamera() {
 		if (!this.currentSceneElement) {
+			return;
+		}
+		if (this.playerElement.parentElement != this.currentSceneElement) {
+			console.log("Player not in scene");
 			return;
 		}
 		let cameraWidth = this.cameraElement.getW();
@@ -207,6 +226,25 @@ class Game {
 		if (this.currentFocusObjectElement && key == "e") {
 			this.playerInteractWithElement(this.currentFocusObjectElement.id);
 		}
+		if (key == "b") {
+			document.body.classList.toggle("debug");
+		}
+		if (key == "l") {
+			let s = "s00"+window.prompt("Scene #");
+			this.loadScene(s);
+		}
+	}
+
+	onMouseDown(evt) {
+		// TODO Implement object measuring tool
+	}
+
+	onMouseUp(evt) {
+		// TODO Implement object measuring tool
+	}
+
+	onMouseMove(evt) {
+		// TODO Implement object measuring tool
 	}
 
 	playerInteractWithElement(objectId) {

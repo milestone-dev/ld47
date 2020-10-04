@@ -8,7 +8,7 @@
 	<meta name="viewport" content="width=device-width, user-scalable=no">
 	<link rel="icon" href="img/favicon.png">
 </head>
-<body>
+<body class="debug">
 
 <div id="game">
 	<div id="ui">
@@ -24,19 +24,26 @@
 				<div class="br"></div>
 			</div>
 		</div>
-		<div id="currentFocusLabel"></div>
+		<div id="currentFocusLabel"></div>d
 	</div>
 </div>
 
 <div id="repository">
 	<x-scene id="s001" data-title="Outside">
-		<x-object id="s001-bin" data-title="Trash bin" data-rect="825x275,125x275"></x-object>
+		<x-object id="s001-bin" data-title="Trash bin" data-rect="835x350,120x205"></x-object>
 		<x-object id="s001-dumpster" data-title="Dumpster" data-rect="300x325,325x250"></x-object>
 		<x-object id="s001-window01" data-title="Window" data-disabled="true" data-rect="585x0,375x215"></x-object>
-		<x-location id="s001-binLeft" data-rect="700x0,125x275"></x-location>
-		<x-location id="s001-binRight" data-rect="950x0,125x275"></x-location>
+		<x-location id="s001-binLeft" data-rect="700x0,125x225"></x-location>
+		<x-location id="s001-binRight" data-rect="950x0,125x225"></x-location>
+		<x-object id="s001-pipe" data-title="Drain pipe" data-rect="150x0,75x50a0"></x-object>
 	</x-scene>
+
 	<x-scene id="s002" data-title="Supply Room">
+		<x-object id="s002-window01" data-title="Window" data-rect="115x75,375x275"></x-object>
+		<x-object id="s002-door01" data-title="Door" data-rect="660x170,175x350"></x-object>
+		<x-object id="s002-shelf" data-title="Shelves" data-rect="5x200,240x350"></x-object>
+		<x-object id="s002-valve" data-title="Valve" data-rect="855x325,65x65"></x-object>
+		<x-object id="s002-cupboard" data-title="Cupboard" data-rect="400x400,240x120"></x-object>
 
 	</x-scene>
 	<x-scene id="s003" data-title="Hallway">

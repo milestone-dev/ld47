@@ -1,6 +1,6 @@
 import {EntityElement} from "./hgl/elements.js"
 import {Rect, Point} from "./hgl/geometry.js"
-import {ObjectElement} from "./SceneElements.js"
+import {ObjectElement} from "./SceneChildElements.js"
 
 export class SceneElement extends EntityElement {
 	constructor() {
@@ -19,9 +19,11 @@ export class SceneElement extends EntityElement {
 			e.setRectFromDataset();
 		});
 
+	}
+
+	onSceneLoad() {
 		//TODO: Clean up hack by listening to some type of layout event
 		window.setTimeout(e=>{this.updateSizeFromComputedSize()}, 100);
-		
 	}
 
 	verifyBlockCollision(point) {

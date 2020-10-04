@@ -35,5 +35,6 @@ Object.freeze(PlayerState);
 export const TriggerType = {
 	bring: "bring",
 	interact: "interact",
+	sceneEnter: "sceneEnter",
 }
 Object.freeze(TriggerType);

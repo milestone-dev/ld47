@@ -122,15 +122,15 @@ x-block, x-location, x-object {
 }
 
 .debug x-block {
-	background: rgba(255,0,0,0.3);
+	background: rgba(255,0,0,0.1);
 }
 
 .debug x-location {
-	background: rgba(0,0,255,0.3);
+	background: rgba(0,0,255,0.1);
 }
 
 .debug x-object {
-	background: rgba(255,0,255,0.3);
+	background: rgba(255,0,255,0.1);
 }
 
 x-character {
@@ -154,4 +154,14 @@ x-character .sprite {
 x-character[data-state="idleRight"] .sprite,
 x-character[data-state="walkingRight"] .sprite {
 	transform: scaleX(-1);
+}
+
+#debugSelection {
+	position: absolute;
+	background: rgba(255,255,255,0.6);
+	display: none;
+}
+
+#debugSelection.active {
+	display: block;
 }

@@ -18,6 +18,11 @@ export class CharacterElement extends EntityElement {
 		return productType.split("_")[0];
 	}
 
+	offsetY(yOffset) {
+		this.point.offsetBy(0, yOffset);
+		this.reloadRect();
+	}
+
 	set type(type) {
 		this._type = type;
 		this.dataset.type = type;
@@ -38,7 +43,7 @@ export class CharacterElement extends EntityElement {
 
 	tick(game) {
 		let sceneElement = document.querySelector("#world x-scene");
-		const travelSpeed = 0.6;
+		const travelSpeed = 0.9;
 		let travelDistance = 15;
 		const distanceBetweenObjects = 10;
 		const walkDelta = travelDistance * travelSpeed;

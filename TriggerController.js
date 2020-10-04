@@ -18,9 +18,10 @@ export class TriggerController {
 	}
 
 	executeBringTriggers(location) {
+		let data = {};
 		this.triggers.forEach(trigger => {
 			if (trigger.type == TriggerType.bring && trigger.identifier == location) {
-				trigger.run(this.delegate);
+				trigger.run(this.delegate, data);
 				if (!trigger.preserve) {
 					this.triggers.removeItem(trigger);
 				}
@@ -29,9 +30,22 @@ export class TriggerController {
 	}
 
 	executeInteractionTriggers(objectId) {
+		let data = {};
 		this.triggers.forEach(trigger => {
 			if (trigger.type == TriggerType.interact && trigger.identifier == objectId) {
-				trigger.run(this.delegate);
+				trigger.run(this.delegate, data);
+				if (!trigger.preserve) {
+					this.triggers.removeItem(trigger);
+				}
+			}
+		})
+	}
+
+	executeEnterSceneTriggers(objectId, previousSceneId) {
+		let data = {previousSceneId:previousSceneId};
+		this.triggers.forEach(trigger => {
+			if (trigger.type == TriggerType.sceneEnter && trigger.identifier == objectId) {
+				trigger.run(this.delegate, data);
 				if (!trigger.preserve) {
 					this.triggers.removeItem(trigger);
 				}
@@ -48,7 +62,7 @@ export class Trigger {
 		this.preserve = preserve;
 	}
 
-	run(delegate) {
-		this.trigger(delegate);
+	run(delegate, data) {
+		this.trigger(delegate, data);
 	}
 }

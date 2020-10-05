@@ -49,8 +49,8 @@ export const Triggers = [
 		} else {
 			g.playerElement.point = new Point(80, 250);
 			if (!g.getSwitch("s001-firstTime")) {
-				g.enqueueMessage("OK - The orders are clear enough. I am supposed to find a way into this research facility, locate the underground research lab, and document or if possible - steal - the industry secrets they keep here.")
-				g.enqueueMessage("They client couldn't tell me to looking for. Only that it's something that helped this mining company increase their yields tenfold in the last year.")
+				g.enqueueMessage("OK - The orders are clear enough. I am supposed to find a way into this research facility, locate the underground research lab, and document or if possible - steal - the industry secrets they keep there.")
+				g.enqueueMessage("The client couldn't tell me what to look for. Only that it's something that helped this mining company increase their yields tenfold in the last year.")
 				g.enqueueMessage("If this is anything like the heist last year, I'm probably looking for some computer algorithm. I will have to keep my eyes open.")
 				g.enqueueMessage("Navigate with the A and D keyboard keys, and interact with your environment with [Enter]", "info")
 				.openMessageBox();
@@ -94,7 +94,7 @@ export const Triggers = [
 
 		if (!g.getSwitch("s001-hasStone") && g.getSwitch("s001-hasInteractedWithWindow")) {
 			g.enqueueMessage("Perhaps...")
-			.enqueueMessage("Yes - I found a broken off chair of a metal chair. That should work.")
+			.enqueueMessage("Yes - I found a broken off leg of a metal chair. That should work.")
 			.openMessageBox();
 			g.setSwitch("s001-hasStone");
 		} else {
@@ -190,7 +190,7 @@ export const Triggers = [
 
 	new Trigger(TriggerType.interact, "s002-cupboard",(g, d) => {
 		if (g.getSwitch("global-timeWarp2")) {
-			g.enqueueMessage("I already have the plier on me!").openMessageBox();
+			g.enqueueMessage("I already have the pliers on me!").openMessageBox();
 			return;
 		};
 
@@ -426,7 +426,7 @@ export const Triggers = [
 		if (!g.getSwitch("s005-talkedToScientist")) {
 			g.setSwitch("s005-talkedToScientist");
 			g.enqueueMessage("It was never supposed to turn out this way. We only wanted to use it for mining.","scientist")
-			.enqueueMessage("We found this... stone deep in the Raunisvaara mountain. With it, we have been able to mine the same vein of ore several times over. Corporate kept pushing for more result. We knew it was unstable. ","scientist")
+			.enqueueMessage("We found this... stone deep in the Raunisvaara mountain. With it, we have been able to mine the same vein of ore several times over. Corporate kept pushing for more results. We knew it was unstable. ","scientist")
 			.enqueueMessage("My wife Klara was the first victim, but I fear it is to blame for the recent dissappearances across town.","scientist")
 			.enqueueMessage("If you want to take it away. I will not hinder you. Do what you will.","scientist")
 			.openMessageBox();
